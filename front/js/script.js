@@ -12,7 +12,7 @@ fetch("http://localhost:3000/api/products")
     console.log(apiArticles);
     //retourne en réponse un tableau contenant plusieurs articles
 
-    //création d'une boucle for...of pour répeter les tâches ->travail sur un array
+    //création d'une boucle for...of (parcourt les valeurs des propriétés)pour répeter les tâches ->travail sur un array
     for (let article of apiArticles) {
     console.log(article);
       //retourne en réponse plusieurs tableaux détaillant chaque articles

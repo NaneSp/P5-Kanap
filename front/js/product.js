@@ -1,25 +1,9 @@
-let params = window.location.href;
+let params = window.location.href; // renvoi le href (url) de la page en cours
 let url = new URL(params);
 let idArticle = url.searchParams.get("id");
 console.log(idArticle); //renvoi bien l'id de l'article selectionné en page d'accueil
 
-const itemImg = document.createElement("img"); 
-console.log(itemImg);// va chercher l'élément img créé
-document.querySelector(".item_img"); //va chercher l'élément ayant la class item_img dans le dom
 
-
-
-const itemName = document.querySelector("#title");
-console.log(itemName); // renvoi bien le title h1 vide du dom ds la console
-
-const itemPrice = document.querySelector("#price");
-console.log(itemPrice); //renvoi bien le price span vide du dom ds la concole
-
-const itemDescription = document.querySelector("#description");
-console.log(itemDescription); // renvoi bien la description p vide du dom ds la console
-
-const itemColor = document.querySelector("#colors");
-console.log(itemColor); //renvoi bien la color select vide du dom ds la console
 
 fetch("http://localhost:3000/api/products/" + idArticle)
 
@@ -35,20 +19,32 @@ fetch("http://localhost:3000/api/products/" + idArticle)
 
     article = idArticle;
     
-    itemImg.src = article.imageUrl; // pq ca ne s'affiche pas?????????? pq ne puis-je pas mettre mon appendchild??
+    const itemImg = document.createElement("img");//création de la balise img
+    document.querySelector(".item__img").appendChild(itemImg);//rajoute un enfant à l'élément (code raccourci)
+    console.log(itemImg);//renvoi bien la balise img dans la console
+    itemImg.src = article.imageUrl;
     itemImg.alt = article.altTxt;
-    
+
+    const itemName = document.querySelector("#title");
+    console.log(itemName); // renvoi bien le title h1  du dom ds la console
     itemName.textContent = article.name;
-    itemDescription.textContent = article.description;
+
+    const itemPrice = document.querySelector("#price");
+    console.log(itemPrice); //renvoi bien le price span  du dom ds la concole
     itemPrice.textContent = article.price;
 
+    const itemDescription = document.querySelector("#description");
+    console.log(itemDescription); // renvoi bien la description p  du dom ds la console
+    itemDescription.textContent = article.description;
 
-    //idée pourrie couleurs
-   /* const colorSelection = article.colors;
-    console.log (colorSelection);//affiche les couleurs dans la console
-    for (let color of colorSelection){
-        itemColor.innerHTML += `<option value ="${color}">${color}</option>`;
-    }*/
+    //création d'une boucle for...of pour répeter les tâches de choix de couleurs
+    for( let colors of article.colors){ 
+    console.log(colors);// renvoi bien les couleurs dispo ds la console
+    const itemColor = document.createElement("option");//création d'une nvelle balise option pr choix des couleurs
+    document.querySelector("#colors").appendChild(itemColor);//ajoute un enfant
+    itemColor.value = colors;
+    itemColor.textContent = colors;
+    }
 
 });
 
