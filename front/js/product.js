@@ -50,46 +50,61 @@ fetch("http://localhost:3000/api/products/" + idArticle)
     alert("Erreur!!!");
     });
 
-/*-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------LOCALSTORAGE-------------------------------------------------------------------------------------------------------------*/
+
+
+//doit récupérer un objet contenant id, coleur, quantité
+
+const idChoice = idArticle;
+const colorChoice  = document.querySelector("#colors");
+const quantityChoice = document.querySelector("#quantity");
+
+//récupération du btn addToCart
+const addToCartBtn = document.querySelector("#addToCart");
+
+
+//Écoute le click du bouton html "ajouter au panier"
+addToCartBtn.addEventListener("click", () =>{
+
+//Création de l'objet sélectionné à ajouter au LocalStorage
+const articleSelected ={
+    idSelected : idChoice,
+    quantitySelected : quantityChoice.value,
+    colorSelected : colorChoice.value, 
+}   
+
+//Déclaration de la variable "articleLocalStorage" ds laquelle on met "clé"/"valeur"qui sont dans le LS **création du LS**
+let articleLocalStorage = JSON.parse(localStorage.getItem ("LSArticle")); //json.parse convertit les données au format JSON (qui st ds le LS) en objet LS
+
+/*******************************************TEST**********************************************************************/
+if(articleSelected.colorSelected !=""){
+    alert ("Vous venez de sélectionner la couleur de votre article!");
+}else if(articleSelected.colorSelected ===""){
+    alert ("Merci de choisir la couleur de votre article");
+}
 
 
 
+/*******************************************TEST**********************************************************************/
 
-    const colorChoice = document.querySelector("#colors");//va chercher l'id colors ds le dom
-    const quantityChoice = document.querySelector ("#quantity");// va chercher l'id quantity ds le dom
-    const addToCartBtn = document.querySelector("#addToCart"); // va chercher l'id addToCart ds le dom
-    
+//si le LS est égal à null (soit ls vide) donc charge l'objet ds le ls
+if(articleLocalStorage == null){
 
-addToCartBtn.addEventListener ("click", ()=>{
+    articleLocalStorage=[];
+    articleLocalStorage.push(articleSelected);
+    localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage));
+    alert ("Votre article a bien été ajouté au panier!");
 
-//création de l'objet à insérer ds le LocalStorage
-    const articleSelected ={
-            idSelected : idArticle,
-            quantitySelected : quantityChoice.value,
-            colorSelected : colorChoice.value
-            }
+    console.log(articleLocalStorage);
+}
 
 
-
-// Déclaration de la variable "articleLocalStorage" dans laquelle on met clé/valeur qui sont ds le LS
-    let articleLocalStorage = JSON.parse(localStorage.getItem("LSArticle"));// json.parse convertit les données au format JSON qui sont ds le LS en objet JS
-        
-
-
-
-
-// si il n'y a pas d'article enregistré ds le LS
-    if (articleLocalStorage == null){
-        articleLocalStorage =[]; //création d'un array vide
-        articleLocalStorage.push(articleSelected); // je push la variable objet ds le tableau
-        localStorage.setItem("LSArticle", JSON.stringify("articleLocalStorage"));//j'envoie les valeurs de la variable ds le ls 
-        alert ("Votre article a bien été ajouté au panier")
-        console.log(articleLocalStorage);//vérif que le tableau s'affiche bien ds la console
-        }
-        //si il y a 1 ou des articles déjà présents dans le LS
-        else{
+//sinon si le LS est différent de null (soit LS contenant déjà un objet) ajoute cet objet 
+else if(articleLocalStorage != null){
+    articleLocalStorage.push(articleSelected);
+    localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage));
+    alert ("Votre article a également été ajouté au panier!");
+}
 
 
-        }
-
-    })
+})
