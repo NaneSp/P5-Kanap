@@ -71,7 +71,7 @@ addToCartBtn.addEventListener('click', function(){
 //Création de l'objet sélectionné à ajouter au LocalStorage
 const articleSelected ={
     idSelected : idChoice,
-    quantitySelected : quantityChoice.value,
+    quantitySelected : parseInt(quantityChoice.value),//Utilisation de la fonction parseInt afin que le string deviennent un entier (si pas de parseInt si ns ajoutons 10 kanap à 10 kanap déjà présents = 1010 et non 20) 
     colorSelected : colorChoice.value, 
 }   
 
@@ -80,12 +80,12 @@ const articleSelected ={
 //Déclaration de la variable "articleLocalStorage" ds laquelle on met "clé"/"valeur"qui sont dans le LS **création du LS**
 let articleLocalStorage = JSON.parse(localStorage.getItem ("LSArticle")); //json.parse convertit les données au format JSON (qui st ds le LS) en objet Javascript + getItem=lecture/récup
 
-    /*TEST*/
+    /*****************TEST*************************/
 
 
 
 //On vérifie que les conditions avec l'opérateur logique ET && soient vraies
-if(articleSelected.quantitySelected >0 && articleSelected.quantitySelected <= 100 && articleSelected.quantity === 100){//si la quantité est supérieure à 0 et si la quantité est inférieure ou égale à 100
+if(articleSelected.quantitySelected >0 && articleSelected.quantitySelected <= 100 ){//si la quantité est supérieure à 0 et si la quantité est inférieure ou égale à 100
     
 }
 //On vérfie que la condition avec l'égalité simple == soit vraie
@@ -96,6 +96,8 @@ else if(articleSelected.colorSelected != ""){ //si la couleur de l'article selec
 else{ // si faux alors crées une alerte
     alert ("Merci de sélectionner une couleur OU/ET une quantité (entre 1 et 100 unités) pour votre article!")
 }
+
+/***************************FIN TEST************************* */
 
 //Si on ajoute un produit au panier, si celui-ci n'était pas déjà présent ds le panier, on ajoute un nvel élément dans l'array (soit ls = vide)
 if(articleLocalStorage == null){
@@ -118,7 +120,8 @@ let articleFound = articleLocalStorage.find( //Création d'une variable d'articl
 
 //différent de null si contient déjà même id et même couleurs donc si articleFound true incrémenter la quantité de l'article UNIQUEMENT 
 if(articleFound){
-    let newQuantity = parseInt(articleFound.quantitySelected) + parseInt(articleSelected.quantitySelected);  //création de la variable nvelle qté qui est = à qté trouvée ds l'articleFound + qté déjà selectionnée  (les élements d'1 tableau ) Utilisation de la fonction parseInt afin que le string deviennent un entier (si pas de parseInt si ns ajoutons 10 kanap à 10 kanap déjà présent = 1010 et non 20) 
+  //création de la variable nvelle qté qui est = à qté trouvée ds l'articleFound + qté déjà selectionnée  (les élements d'1 tableau ) Utilisation de la fonction parseInt afin que le string deviennent un entier (si pas de parseInt si ns ajoutons 10 kanap à 10 kanap déjà présent = 1010 et non 20) 
+    let newQuantity = articleFound.quantitySelected + articleSelected.quantitySelected;
     articleFound.quantitySelected = newQuantity; 
     localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
     alert (` Vous avez selectionnez ${articleFound.quantitySelected} unités pour cet article`)
