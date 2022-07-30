@@ -34,15 +34,29 @@ fetch("http://localhost:3000/api/products/" + idArticle)
     //console.log(itemDescription); // renvoi bien la description p  du dom ds la console
     itemDescription.textContent = idArticle.description;
 
-//création d'une boucle for...of pour répeter les tâches de choix de couleurs
+//Création boucle forEach
+idArticle.colors.forEach (function (color){
+    const option = document.createElement("option");
+    const select = document.querySelector("#colors");
+    select.appendChild(option);
 
-    for (let colors of idArticle.colors) {
+    option.value = color;
+    option.textContent = color;
+
+
+})
+
+
+
+
+//création d'une boucle for...of pour répeter les tâches de choix de couleurs
+    /*for (let colors of idArticle.colors) {
       //console.log(colors); // renvoi bien les couleurs dispo ds la console
     const itemColor = document.createElement("option"); //création d'une nvelle balise option pr choix des couleurs
     document.querySelector("#colors").appendChild(itemColor);
     itemColor.value = colors;
     itemColor.textContent = colors;
-    }
+    }*/
     })
 
     .catch(function (error) {
@@ -53,7 +67,9 @@ fetch("http://localhost:3000/api/products/" + idArticle)
 /*----------------------------------------------------------------LOCALSTORAGE-------------------------------------------------------------------------------------------------------------*/
 
 
-//doit récupérer un objet contenant id, coleur, quantité
+
+
+//Récupération des informations nécessaires à l'ajout du panier : id /couleur / quantité + récupération du bouton "ajouter au panier"
 
 const idChoice = idArticle;
 const colorChoice  = document.querySelector("#colors");
@@ -64,7 +80,7 @@ const addToCartBtn = document.querySelector("#addToCart");
 
 
 //Écoute le click du bouton html "ajouter au panier"
-addToCartBtn.addEventListener("click", () =>{
+addToCartBtn.addEventListener('click', function(){
 
 //Création de l'objet sélectionné à ajouter au LocalStorage
 const articleSelected ={
@@ -73,38 +89,68 @@ const articleSelected ={
     colorSelected : colorChoice.value, 
 }   
 
-//Déclaration de la variable "articleLocalStorage" ds laquelle on met "clé"/"valeur"qui sont dans le LS **création du LS**
-let articleLocalStorage = JSON.parse(localStorage.getItem ("LSArticle")); //json.parse convertit les données au format JSON (qui st ds le LS) en objet LS
+//INFOS LocalStorage : ajout-stockage = lS.setItem() / lecture-récupération = lS.getItem() / Suppression de l'élément = lS.removeItem
 
-/*******************************************TEST**********************************************************************/
-if(articleSelected.colorSelected !=""){
-    alert ("Vous venez de sélectionner la couleur de votre article!");
-}else if(articleSelected.colorSelected ===""){
-    alert ("Merci de choisir la couleur de votre article");
+//Déclaration de la variable "articleLocalStorage" ds laquelle on met "clé"/"valeur"qui sont dans le LS **création du LS**
+let articleLocalStorage = JSON.parse(localStorage.getItem ("LSArticle")); //json.parse convertit les données au format JSON (qui st ds le LS) en objet Javascript + getItem=lecture/récup
+
+    /*TEST*/
+
+
+
+//On vérifie que les conditions avec l'opérateur logique ET && soient vraies
+if(articleSelected.quantitySelected >0 && articleSelected.quantitySelected <= 100 && articleSelected.quantity === 100){//si la quantité est supérieure à 0 et si la quantité est inférieure ou égale à 100
+    
+}
+//On vérfie que la condition avec l'égalité simple == soit vraie
+else if(articleSelected.colorSelected != ""){ //si la couleur de l'article selectionné est différent de "rien" (vrai)
+    
 }
 
+else{ // si faux alors crées une alerte
+    alert ("Merci de sélectionner une couleur OU/ET une quantité (entre 1 et 100 unités) pour votre article!")
+}
 
-
-/*******************************************TEST**********************************************************************/
-
-//si le LS est égal à null (soit ls vide) donc charge l'objet ds le ls
+//Si on ajoute un produit au panier, si celui-ci n'était pas déjà présent ds le panier, on ajoute un nvel élément dans l'array (soit ls = vide)
 if(articleLocalStorage == null){
 
-    articleLocalStorage=[];
-    articleLocalStorage.push(articleSelected);
-    localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage));
-    alert ("Votre article a bien été ajouté au panier!");
+    articleLocalStorage=[]; // articleLocalStorage = array vide
+    articleLocalStorage.push(articleSelected);//push ajout un élément
+    localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage));//setItem=ajout/stockage + json.stringify convertit un objet JS en données json
+    alert ("Article bien ajouté au panier!");
 
-    console.log(articleLocalStorage);
+    console.log(articleLocalStorage);//Vérifie le résultat du LS ds la console
 }
 
+//si on ajoute un produit au panier, si celui-ci était déjà présent ds le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l'array (soit si ls est différent de vide)
+else if (articleLocalStorage != null){
 
-//sinon si le LS est différent de null (soit LS contenant déjà un objet) ajoute cet objet 
-else if(articleLocalStorage != null){
+let articleFound = articleLocalStorage.find( //Création d'une variable d'article trouvé ds le LS 
+//(ds le ls je veux trouver les élément ayant l'id  strictement égal aux id des articles que j'ai déjà selectionné (vérifie valeur et type))
+//(---ET (vérifie que les 2 conditions st ttes les 2 true) je veux trouver les éléments ayant la couleur strictement égale aux couleurs déjà sélectionnées (vérifie valeur et type))
+    (kanap) => kanap.idSelected === articleSelected.idSelected && kanap.colorSelected === articleSelected.colorSelected);  
+
+//différent de null si contient déjà même id et même couleurs donc si articleFound true incrémenter la quantité de l'article UNIQUEMENT 
+if(articleFound){
+    let newQuantity = parseInt(articleFound.quantitySelected) + parseInt(articleSelected.quantitySelected);  //création de la variable nvelle qté qui est = à qté trouvée ds l'articleFound + qté déjà selectionnée  (les élements d'1 tableau ) Utilisation de la fonction parseInt afin que le string deviennent un entier (si pas de parseInt si ns ajoutons 10 kanap à 10 kanap déjà présent = 1010 et non 20) 
+    articleFound.quantitySelected = newQuantity; 
+    localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
+    alert (` Vous avez selectionnez ${articleFound.quantitySelected} unités pour cet article`)
+}
+//sinon ajouter l'article simplement
+else{
     articleLocalStorage.push(articleSelected);
     localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage));
-    alert ("Votre article a également été ajouté au panier!");
+    alert ("Article également ajouté au panier!")
 }
 
+}
 
 })
+
+
+
+
+
+
+
