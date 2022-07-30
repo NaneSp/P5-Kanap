@@ -12,51 +12,37 @@ fetch("http://localhost:3000/api/products/" + idArticle)
     })
 
     .then(function (idArticle) {
-   // console.table(idArticle);
+// console.table(idArticle);
 //retourne en réponse un tableau de l'article en détail
 
 
     const itemImg = document.createElement("img"); //création de la balise img
     document.querySelector(".item__img").appendChild(itemImg); //rajoute un enfant à l'élément (code raccourci)
-    //console.log(itemImg); //renvoi bien la balise img dans la console
+//console.log(itemImg); //renvoi bien la balise img dans la console
     itemImg.src = idArticle.imageUrl;
     itemImg.alt = idArticle.altTxt;
 
     const itemName = document.querySelector("#title");
-    //console.log(itemName); // renvoi bien le title h1  du dom ds la console
+//console.log(itemName); // renvoi bien le title h1  du dom ds la console
     itemName.textContent = idArticle.name;
 
     const itemPrice = document.querySelector("#price");
-    //console.log(itemPrice); //renvoi bien le price span  du dom ds la concole
+//console.log(itemPrice); //renvoi bien le price span  du dom ds la concole
     itemPrice.textContent = idArticle.price;
 
     const itemDescription = document.querySelector("#description");
-    //console.log(itemDescription); // renvoi bien la description p  du dom ds la console
+//console.log(itemDescription); // renvoi bien la description p  du dom ds la console
     itemDescription.textContent = idArticle.description;
 
 //Création boucle forEach
-idArticle.colors.forEach (function (color){
-    const option = document.createElement("option");
-    const select = document.querySelector("#colors");
-    select.appendChild(option);
+idArticle.colors.forEach (color =>{
+    const itemOption = document.createElement("option");
+    document.querySelector("#colors").appendChild(itemOption);
+//console.log(itemOption); // renvoi bien les balises option value des couleurs du dom ds la console     
+    itemOption.value = color;
+    itemOption.textContent = color;
+});
 
-    option.value = color;
-    option.textContent = color;
-
-
-})
-
-
-
-
-//création d'une boucle for...of pour répeter les tâches de choix de couleurs
-    /*for (let colors of idArticle.colors) {
-      //console.log(colors); // renvoi bien les couleurs dispo ds la console
-    const itemColor = document.createElement("option"); //création d'une nvelle balise option pr choix des couleurs
-    document.querySelector("#colors").appendChild(itemColor);
-    itemColor.value = colors;
-    itemColor.textContent = colors;
-    }*/
     })
 
     .catch(function (error) {
@@ -125,7 +111,7 @@ if(articleLocalStorage == null){
 //si on ajoute un produit au panier, si celui-ci était déjà présent ds le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l'array (soit si ls est différent de vide)
 else if (articleLocalStorage != null){
 
-let articleFound = articleLocalStorage.find( //Création d'une variable d'article trouvé ds le LS 
+let articleFound = articleLocalStorage.find( //Création d'une variable d'article trouvé ds le array LS 
 //(ds le ls je veux trouver les élément ayant l'id  strictement égal aux id des articles que j'ai déjà selectionné (vérifie valeur et type))
 //(---ET (vérifie que les 2 conditions st ttes les 2 true) je veux trouver les éléments ayant la couleur strictement égale aux couleurs déjà sélectionnées (vérifie valeur et type))
     (kanap) => kanap.idSelected === articleSelected.idSelected && kanap.colorSelected === articleSelected.colorSelected);  
