@@ -34,7 +34,7 @@ fetch("http://localhost:3000/api/products/" + idArticle)
 //console.log(itemDescription); // renvoi bien la description p  du dom ds la console
     itemDescription.textContent = idArticle.description;
 
-//Création boucle forEach
+//Création boucle forEach pour ajouter les couleurs en option de la balise select du html
 idArticle.colors.forEach (color =>{
     const itemOption = document.createElement("option");
     document.querySelector("#colors").appendChild(itemOption);
