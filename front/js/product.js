@@ -52,8 +52,6 @@ idArticle.colors.forEach (color =>{
 
 /*----------------------------------------------------------------LOCALSTORAGE-------------------------------------------------------------------------------------------------------------*/
 
-
-
 //Récupération des informations nécessaires à l'ajout du panier : id /couleur / quantité + (ajout du nom du kanap pour création de msg) + récupération du bouton "ajouter au panier"
 
 const idChoice = idArticle;
@@ -124,7 +122,7 @@ else if (articleSelected.quantitySelected >0 && articleSelected.quantitySelected
     }
     }
 else{
-    alert("Merci de sélectionner une quantité entre 1 et 100 unités à votre article");
+    alert("");
 }
 
 
