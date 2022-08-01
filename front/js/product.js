@@ -102,7 +102,8 @@ else {
 //si on ajoute un produit au panier, si celui-ci était déjà présent ds le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l'array (soit si ls est différent de vide)
 /*2*/else if (articleLocalStorage != null){
 
-        let articleFound = articleLocalStorage.find( //Création d'une variable d'article trouvé ds le array LS 
+//Création d'une variable des articles trouvés ds le array LS     
+        let articleFound = articleLocalStorage.find( 
 //(ds le ls je veux trouver les élément ayant l'id  strictement égal aux id des articles que j'ai déjà selectionné (vérifie valeur et type))
 //(---ET (vérifie que les 2 conditions st ttes les 2 true) je veux trouver les éléments ayant la couleur strictement égale aux couleurs déjà sélectionnées (vérifie valeur et type))
         (kanap) => kanap.idSelected === articleSelected.idSelected && kanap.colorSelected === articleSelected.colorSelected);  
@@ -114,9 +115,9 @@ else {
             let newQuantity = articleFound.quantitySelected + articleSelected.quantitySelected;
             articleFound.quantitySelected = newQuantity; 
             localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
- //Si dans ce cas la quantié est supérieure à 100 unités alerte et ne doit pas ajouter au panier           
+//Si dans ce cas la quantié est supérieure à 100 unités alerte et ne doit pas ajouter au panier           
             if(newQuantity > 100){
-                alert (`Vous avez déjà sélectionner${articleSelected.quantitySelected} ${articleSelected.name} de couleur ${articleSelected.colorSelected}, veillez à ne pas dépasser les 100 unités`)
+                alert (`Vous avez déjà sélectionné ${articleSelected.quantitySelected} ${articleSelected.nameSelected} de couleur ${articleSelected.colorSelected}, veillez à ne pas dépasser les 100 unités`)
             }
 //SINON 
             else {
