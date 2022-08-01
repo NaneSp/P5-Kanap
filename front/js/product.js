@@ -77,14 +77,18 @@ const articleSelected ={
 //Déclaration de la variable "articleLocalStorage" ds laquelle on met "clé"/"valeur"qui sont dans le LS **création du LS**
 let articleLocalStorage = JSON.parse(localStorage.getItem("LSArticle"));//json.parse convertit les données au format JSON (qui st ds le LS) en objet Javascript + getItem=lecture/récup
 
+//Si la couleur séletionnée est = à rien ---> soit true alors alert
 if(articleSelected.colorSelected ==""){
     alert ("Merci de sélectionner une couleur à votre article");
 }
 
-if (articleSelected.quantitySelected < 1 || articleSelected.quantitySelected >100 ){
+//Et si la quantité sélectionnée et inférieure à 1 OU supérieure à 100 --->soit une des 2 condition est true
+else if (articleSelected.quantitySelected < 1 || articleSelected.quantitySelected >100 ){
     alert ("Merci de sélectionner une quantité entre 1 et 100 unités à votre article");
 }
-else if (articleSelected.quantitySelected >0 && articleSelected.quantitySelected <=100 ){
+
+//SINON
+else {
 
 //Si on ajoute un produit au panier, si celui-ci n'était pas déjà présent ds le panier, on ajoute un nvel élément dans l'array (soit ls = vide)
 /*1*/if(articleLocalStorage == null){
@@ -93,7 +97,6 @@ else if (articleSelected.quantitySelected >0 && articleSelected.quantitySelected
         articleLocalStorage.push(articleSelected);//push ajout un élément
         localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage));//setItem=ajout/stockage + json.stringify convertit un objet JS en données json
         alert (`Vous avez ajouté ${articleSelected.quantitySelected} ${articleSelected.nameSelected} de couleur ${articleSelected.colorSelected} à votre panier.`);
-    
 //console.log(articleLocalStorage);//Vérifie le résultat du LS ds la console
     }
 //si on ajoute un produit au panier, si celui-ci était déjà présent ds le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l'array (soit si ls est différent de vide)
@@ -111,7 +114,14 @@ else if (articleSelected.quantitySelected >0 && articleSelected.quantitySelected
             let newQuantity = articleFound.quantitySelected + articleSelected.quantitySelected;
             articleFound.quantitySelected = newQuantity; 
             localStorage.setItem("LSArticle", JSON.stringify(articleLocalStorage)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
-            alert (` Vous avez ${articleSelected.quantitySelected} ${articleSelected.nameSelected} de couleur ${articleSelected.colorSelected} dans votre panier.`)
+ //Si dans ce cas la quantié est supérieure à 100 unités alerte et ne doit pas ajouter au panier           
+            if(newQuantity > 100){
+                alert (`Vous avez déjà sélectionner${articleSelected.quantitySelected} ${articleSelected.name} de couleur ${articleSelected.colorSelected}, veillez à ne pas dépasser les 100 unités`)
+            }
+//SINON 
+            else {
+                alert (` Vous avez ${articleSelected.quantitySelected} ${articleSelected.nameSelected} de couleur ${articleSelected.colorSelected} dans votre panier.`)
+        }
         }
     
 //sinon ajouter l'article simplement
@@ -121,11 +131,6 @@ else if (articleSelected.quantitySelected >0 && articleSelected.quantitySelected
         alert (`Vous avez ajouté ${articleSelected.quantitySelected} ${articleSelected.nameSelected} de couleur ${articleSelected.colorSelected} à votre panier.`)
     }
     }
-else{
-    alert("");
-}
-
-
 }
 });
 
