@@ -12,6 +12,7 @@ fetch("http://localhost:3000/api/products")
     console.log(apiArticles);
     //retourne en réponse un tableau contenant plusieurs articles
 
+    //Création de la boucle ForEach afin d'inserer dynamiquement les éléments ds le DOM
     apiArticles.forEach((article) => {
       console.log(article);
 

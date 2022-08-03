@@ -15,6 +15,8 @@ fetch("http://localhost:3000/api/products/" + idArticle)
     //console.table(idArticle);
     //retourne en réponse un tableau de l'article en détail
 
+    //Insertion des éléments ds le DOM
+    
     const itemImg = document.createElement("img"); //création de la balise img
     document.querySelector(".item__img").appendChild(itemImg); //rajoute un enfant à l'élément (code raccourci)
     //console.log(itemImg); //renvoi bien la balise img dans la console
