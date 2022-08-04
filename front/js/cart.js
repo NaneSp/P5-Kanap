@@ -1,47 +1,31 @@
-//Récupération du ls
-let articleLocalStorage = JSON.parse(localStorage.getItem("LSArticle"));
-console.log(articleLocalStorage); //renvoi bien le contenu du LS ds la console
+//Récupération du LocalStorage
 
-const cartItems = document.querySelector("#cart__items"); //récupération de l'id cart__item emplacement des produits à afficher sur la page cart
+const cartLS = JSON.parse(localStorage.getItem('LSArticle'));
+console.log(cartLS);//renvoi bien le contenu du Local Storage
 
-//Si le panier est vide
-if (articleLocalStorage === null) {
-  const cartEmpty = "  0 Article, votre panier est vide!";
-  cartItems.textContent = cartEmpty;
+//Observation du panier
+async function observeCart(){ 
+//si le panier est vide
+
+if (cartLS === null){
+    document.querySelector("#cart__item").textContent = "O Article,  Votre panier est vide !"
 }
-//SINON (la panier contient un ou des articles)
-else {
-  //Création d'une boucle afin d'insérer dynamiquement les élements
-  for (let article in articleLocalStorage) {
-    fetch(
-      `http://localhost:3000/api/products/${articleLocalStorage[article].idSelected}`
-    )
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (cartArticle) {
-        console.log(articleLocalStorage[article].idSelected); //Retourne l'id des articles sélectionnés en page produit
 
-        //Recherche des besoin img, description,prix ds l'api
-        articleLocalStorage[article].imgCartArticle = cartArticle.imageUrl;
-        articleLocalStorage[article].altImgcartArticle = cartArticle.altTxt;
-        articleLocalStorage[article].priceCartArticle = cartArticle.price;
+//sinon 
+else{
+    for (let article in cartLS){
 
-        //test de calcul des prix
-        /* totalPrice += cartArticle.price * articleLocalStorage[article].quantitySelected*/
+        const id = cartLS[article].idSelected;
+        //console.log(id); retroune bien les id des produits du LS
+        const urlArticle = `http://localhost:3000/api/products/${id}`;
+        await fetch (urlArticle).then((response) => response.json().then(async(data) => {
 
         //Création de la balise article dans le dom
         const articleCart = document.createElement("article"); //Créé un élément article (en exemple ds le html)
         document.querySelector("#cart__items").appendChild(articleCart);
         articleCart.className = "cart__item"; //créé la class de l'article
-        articleCart.setAttribute(
-          "data-id",
-          articleLocalStorage[article].idSelected
-        ); //modifie l'attribut, prend en compte data id et l'article selectionné
-        articleCart.setAttribute(
-          "data-color",
-          articleLocalStorage[article].colorSelected
-        ); //modifie l'attribut, prend en compte data-color et l'article selectionné
+        articleCart.setAttribute("data-id",cartLS[article].idSelected); //modifie l'attribut, prend en compte data id et l'article selectionné
+        articleCart.setAttribute("data-color",cartLS[article].colorSelected); //modifie l'attribut, prend en compte data-color et l'article selectionné
 
         //Création de la balise div (enfant de article)ds le dom
         const articleImg = document.createElement("div");
@@ -51,8 +35,8 @@ else {
         //Création de la balise img
         const articleImgSrc = document.createElement("img");
         articleImg.appendChild(articleImgSrc);
-        articleImgSrc.src = articleLocalStorage[article].imgCartArticle; //récupération de l'imageUrl ds l'api
-        articleImgSrc.alt = articleLocalStorage[article].altImgcartArticle; //récupération du altText ds l'api
+        articleImgSrc.src = data.imageUrl; //récupération de l'imageUrl ds l'api
+        articleImgSrc.alt = data.altText; //récupération du altText ds l'api
 
         //Création de la balise div
         const articleCartItemContent = document.createElement("div");
@@ -62,40 +46,35 @@ else {
         //Création de la balise div apparaissant ds le css
         const articleCartItemContentDescription = document.createElement("div");
         articleCartItemContent.appendChild(articleCartItemContentDescription);
-        articleCartItemContentDescription.className =
-          "cart__item__content__titlePrice";
+        articleCartItemContentDescription.className ="cart__item__content__titlePrice";
 
         //Création de la balise titre
         const articleH2 = document.createElement("h2");
         articleCartItemContentDescription.appendChild(articleH2);
-        articleH2.textContent = articleLocalStorage[article].nameSelected; //récupération du nom ds le LS (puisque ns en avions besoin pour les alertes)
-        console.log(articleH2); // retourne bien les noms des articles présents ds le LS ds la console
+        articleH2.textContent = data.name; //récupération du nom ds le LS (puisque ns en avions besoin pour les alertes)
+        //console.log(articleH2); // retourne bien les noms des articles présents ds le LS ds la console
 
         //Création de la balise p contenant la couleur
         const articleColor = document.createElement("p");
         articleCartItemContentDescription.appendChild(articleColor);
-        articleColor.textContent = articleLocalStorage[article].colorSelected; //récupération de la couleur ds le LS
+        articleColor.textContent = cartLS[article].colorSelected; //récupération de la couleur ds le LS
 
         //Création de la balise p contenant le prix unitaire des articles
         const articlePrice = document.createElement("p");
         articleCartItemContentDescription.appendChild(articlePrice);
-        articlePrice.textContent =
-          articleLocalStorage[article].priceCartArticle + " € (prix à l'unité)";
+        articlePrice.textContent = data.price + " € (prix à l'unité)";
+        console.log(articlePrice);//retourne bien les prix des articles sélectionnés    
 
         //Création de la balise div
         const articleCartItemContentSettings = document.createElement("div");
         articleCartItemContent.appendChild(articleCartItemContentSettings);
-        articleCartItemContentSettings.className =
-          "cart__item__content__settings";
+        articleCartItemContentSettings.className ="cart__item__content__settings";
 
         //Création de la balise div encadrant la quantité
         const articleCartItemContentSettingsQuantity =
-          document.createElement("div");
-        articleCartItemContentSettings.appendChild(
-          articleCartItemContentSettingsQuantity
-        );
-        articleCartItemContentSettingsQuantity.className =
-          "cart__item__content__settings__quantity";
+        document.createElement("div");
+        articleCartItemContentSettings.appendChild(articleCartItemContentSettingsQuantity);
+        articleCartItemContentSettingsQuantity.className ="cart__item__content__settings__quantity";
 
         //Création de la balise p contenant la quantité du LS
         const articleQuantity = document.createElement("p");
@@ -106,7 +85,7 @@ else {
         //Création de la balise input permettant la modification de la quantité ds le p anier
         const articleInput = document.createElement("input");
         articleCartItemContentSettingsQuantity.appendChild(articleInput);
-        articleInput.value = articleLocalStorage[article].quantitySelected;
+        articleInput.value = cartLS[article].quantitySelected;
         articleInput.className = "itemQuantity";
         articleInput.setAttribute("name", "itemQuantity");
         articleInput.setAttribute("type", "number");
@@ -115,18 +94,44 @@ else {
 
         //Création de la balise div encadrant la possibilité d'effacer l'article du panier
         const articleCartItemContentSettingsDelete =
-          document.createElement("div");
-        articleCartItemContentSettings.appendChild(
-          articleCartItemContentSettingsDelete
-        );
-        articleCartItemContentSettingsDelete.className =
-          "cart__item__content__settings__delete";
+        document.createElement("div");
+        articleCartItemContentSettings.appendChild(articleCartItemContentSettingsDelete);
+        articleCartItemContentSettingsDelete.className ="cart__item__content__settings__delete";
 
         //Création de la balise p permettant la suppression des articles selectionnés
         const articleDelete = document.createElement("p");
         articleCartItemContentSettingsDelete.appendChild(articleDelete);
         articleDelete.className = "deleteItem";
         articleDelete.innerHTML = "Supprimer";
-      });
-  }
+
+        }))
+};
+//Création des fonctions à venir
+
+
+
 }
+}
+
+/*******test*****/
+
+function Quantity(){
+    
+    
+    
+    let quantityTotal = 0;
+    
+    for (let i = 0; i < cartLS.length; i++){
+        quantityTotal += cartLS[i].quantitySelected;
+    }
+    //console.log(quantityTotal);//renvoi la quantité des articles sélectionnés du LS
+    
+    let totalQuantity = document.querySelector("#totalQuantity");
+    totalQuantity.textContent = quantityTotal;
+
+}
+
+Quantity();
+
+observeCart();
+
