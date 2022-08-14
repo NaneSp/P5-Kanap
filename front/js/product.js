@@ -106,7 +106,7 @@ addToCartBtn.addEventListener("click", function () {
     //si on ajoute un produit au panier, si celui-ci était déjà présent ds le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l'array (soit si ls est différent de vide)
     /*2*/
     else if (cartLS != null) {
-      c
+      
       //Création d'une variable des articles trouvés ds le array LS
       let articleFound = cartLS.find(
         //(ds le ls je veux trouver les élément ayant l'id  strictement égal aux id des articles que j'ai déjà selectionné (vérifie valeur et type))
@@ -120,7 +120,7 @@ addToCartBtn.addEventListener("click", function () {
       /*A*/ if (articleFound) {
         //création de la variable nvelle qté qui est = à qté trouvée ds l'articleFound + qté déjà selectionnée  (les élements d'1 tableau )
         let newQuantity =
-          articleFound.quantitySelected + aSelected.quantitySelected;
+        articleFound.quantitySelected + aSelected.quantitySelected;
         articleFound.quantitySelected = newQuantity;
         localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
         alert(
