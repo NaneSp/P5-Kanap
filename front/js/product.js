@@ -1,3 +1,5 @@
+/*But :  importer l'article sélectionné en page d'accueil de façon dynamique*/
+
 //récupération des paramètres URL pour l'id
 let params = window.location.href; // renvoi le href (url) de la page en cours
 let url = new URL(params); //crée un nvel objet
@@ -13,42 +15,43 @@ fetch("http://localhost:3000/api/products/" + id)
 
   .then(function (id) {
     //console.table(id);//retourne en réponse un tableau de l'article en détail
-
-    //Insertion des éléments ds le DOM
-    
-    const itemImg = document.createElement("img"); //création de la balise img
-    document.querySelector(".item__img").appendChild(itemImg); //rajoute un enfant à l'élément (code raccourci)
-    //console.log(itemImg); //renvoi bien la balise img dans la console
-    itemImg.src = id.imageUrl;
-    itemImg.alt = id.altTxt;
-
-    const itemName = document.querySelector("#title");
-    //console.log(itemName); // renvoi bien le title h1  du dom ds la console
-    itemName.textContent = id.name;
-
-    const itemPrice = document.querySelector("#price");
-    //console.log(itemPrice); //renvoi bien le price span  du dom ds la concole
-    itemPrice.textContent = id.price;
-
-    const itemDescription = document.querySelector("#description");
-    //console.log(itemDescription); // renvoi bien la description p  du dom ds la console
-    itemDescription.textContent = id.description;
-
-    //Création boucle forEach pour ajouter les couleurs en option de la balise select du html
-    id.colors.forEach((color) => {
-      const itemOption = document.createElement("option");
-      document.querySelector("#colors").appendChild(itemOption);
-      //console.log(itemOption); // renvoi bien les balises option value des couleurs du dom ds la console
-      itemOption.value = color;
-      itemOption.textContent = color;
-    });
+    localStorageId(id);
   })
 
   .catch(function (error) {
     //si erreur retourne message d'erreur
-    alert("Erreur!!!");
+    alert("Erreur! Avez-vous bien lancé le serveur local (port 3000)");
   });
 
+function localStorageId(id) {
+  //Insertion des éléments ds le DOM
+  const itemImg = document.createElement("img"); //création de la balise img
+  document.querySelector(".item__img").appendChild(itemImg); //rajoute un enfant à l'élément (code raccourci)
+  //console.log(itemImg); //renvoi bien la balise img dans la console
+  itemImg.src = id.imageUrl;
+  itemImg.alt = id.altTxt;
+
+  const itemName = document.querySelector("#title");
+  //console.log(itemName); // renvoi bien le title h1  du dom ds la console
+  itemName.textContent = id.name;
+
+  const itemPrice = document.querySelector("#price");
+  //console.log(itemPrice); //renvoi bien le price span  du dom ds la concole
+  itemPrice.textContent = id.price;
+
+  const itemDescription = document.querySelector("#description");
+  //console.log(itemDescription); // renvoi bien la description p  du dom ds la console
+  itemDescription.textContent = id.description;
+
+  //Création boucle forEach pour ajouter les couleurs en option de la balise select du html
+  id.colors.forEach((color) => {
+    const itemOption = document.createElement("option");
+    document.querySelector("#colors").appendChild(itemOption);
+    //console.log(itemOption); // renvoi bien les balises option value des couleurs du dom ds la console
+    itemOption.value = color;
+    itemOption.textContent = color;
+  });
+}
 /*----------------------------------------------------------------LOCALSTORAGE-------------------------------------------------------------------------------------------------------------*/
 
 //Récupération des informations nécessaires à l'ajout du panier : id /couleur / quantité + (ajout du nom du kanap pour création de msg) + récupération du bouton "ajouter au panier"
@@ -81,10 +84,7 @@ addToCartBtn.addEventListener("click", function () {
   }
 
   //Et si la quantité sélectionnée et inférieure à 1 OU supérieure à 100 --->soit une des 2 condition est true
-  else if (
-    aSelected.quantitySelected < 1 ||
-    aSelected.quantitySelected > 100
-  ) {
+  else if (aSelected.quantitySelected < 1 || aSelected.quantitySelected > 100) {
     alert(
       "Merci de sélectionner une quantité entre 1 et 100 unités à votre article"
     );
@@ -100,13 +100,11 @@ addToCartBtn.addEventListener("click", function () {
       alert(
         `Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier.`
       );
-      //console.log(articleLocalStorage);//Vérifie le résultat du LS ds la console
     }
 
     //si on ajoute un produit au panier, si celui-ci était déjà présent ds le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l'array (soit si ls est différent de vide)
     /*2*/
     else if (cartLS != null) {
-      
       //Création d'une variable des articles trouvés ds le array LS
       let articleFound = cartLS.find(
         //(ds le ls je veux trouver les élément ayant l'id  strictement égal aux id des articles que j'ai déjà selectionné (vérifie valeur et type))
@@ -120,14 +118,14 @@ addToCartBtn.addEventListener("click", function () {
       /*A*/ if (articleFound) {
         //création de la variable nvelle qté qui est = à qté trouvée ds l'articleFound + qté déjà selectionnée  (les élements d'1 tableau )
         let newQuantity =
-        articleFound.quantitySelected + aSelected.quantitySelected;
+          articleFound.quantitySelected + aSelected.quantitySelected;
         articleFound.quantitySelected = newQuantity;
         localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
         alert(
           ` Vous avez ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} dans votre panier.`
         );
       }
-            //sinon ajouter l'article simplement
+      //sinon ajouter l'article simplement
       /*B*/
       else {
         cartLS.push(aSelected);
