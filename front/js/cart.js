@@ -197,13 +197,177 @@ else {
       articleDelete.className = "deleteItem";
       articleDelete.innerHTML = "Supprimer";
 
-      /*****************************delete**************************************/
-
-      let deleteBtn = document.querySelectorAll(".deleteItem");
-      console.log(deleteBtn);
-
+      
+      
       
 
     }
+
+    deleteItems();
   });
+/*****************************delete**************************************/
+
+function deleteItems(){
+  let deleteBtn = document.querySelectorAll(".deleteItem");
+  console.log(deleteBtn);
+
+for (let i = 0; i < deleteBtn.length; i++){
+  deleteBtn[i].addEventListener("click",(event)=>{
+    event.preventDefault();
+    console.log(event);
+
+    let idDelete = cart[i].idSelected;
+    console.log(idDelete);
+    
+
+  })
 }
+}
+
+}
+
+
+/************************************************Formulaire ******************************************/
+
+//Expressions rationnelles ou Expressions régulières = Regex
+
+//création d'une variable récupérant la place du formulaire
+let form = document.querySelector(".cart__order__form");
+//console.log(form.firstName);// retourne l'input firstName du formulaire
+
+// 1 Ecouter la modification de l'email
+form.email.addEventListener("change", function () {
+  validEmail(this);
+});
+
+//validation email
+const validEmail = function (inputEmail) {
+  //Création de la reg Exp pour la validation email
+  let emailRegExp = new RegExp(
+    "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$",
+    "g"
+  );
+  //^ = début donc au début on a le droit d'écrire ds l'email le a-z ou le A-Z ou 0-9 mais aussi des  .  des tirets des underscrore et on peut les écrire +sieurs fois (d'ou le +)
+  //PUIS j'aurai le @ (une seule fois)et de la même manière qu'au début
+  //ensuite le caractère du . (une seule fois) (pour faire le .com .fr...)
+  //qui sera finalisé par . des lettres minuscules et entre 2lettres mini et 10 maxi
+  //$ indique la fin de la phrase
+
+  //console.log(testEmail); // renvoi bien vrai si email ok = toto@gmail.com
+
+  //Récupération de la balise où se situera le message d'erreur si false
+  let emailErrorMsg = document.querySelector("#emailErrorMsg");
+
+  if (emailRegExp.test(inputEmail.value) == false) {
+    emailErrorMsg.textContent = "Attention ! Email invalide";
+    document.querySelector("#email").style.background = "#fbbcbc";
+  } else {
+  }
+};
+
+// 2 Ecouter la modification du prénom
+form.firstName.addEventListener("change", function () {
+  validFirstName(this);
+});
+
+//validation prénom
+const validFirstName = function (inputFirstName) {
+  //Création de la reg Exp pour la validation email
+  let firstNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ--]+$", "g");
+
+  //Récupération de la balise où se situera le message d'erreur si false
+  let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
+
+  if (firstNameRegExp.test(inputFirstName.value) == false) {
+    firstNameErrorMsg.textContent = "Attention ! Prénom Invalide";
+    document.querySelector("#firstName").style.background = "#fbbcbc";
+  } else {
+  }
+};
+
+// 3 Ecouter la modification du nom
+form.lastName.addEventListener("change", function () {
+  validlastName(this);
+});
+
+//validation du nom
+const validlastName = function (inputlastName) {
+  //Création de la reg Exp pour la validation email
+  let lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ--]+$", "g");
+
+  //Récupération de la balise où se situera le message d'erreur si false
+  let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
+
+  if (lastNameRegExp.test(inputlastName.value) == false) {
+    lastNameErrorMsg.textContent = "Attention ! Nom Invalide";
+    document.querySelector("#lastName").style.background = "#fbbcbc";
+  } else {
+  }
+};
+
+// 4 Ecouter la modification de l'adresse
+form.address.addEventListener("change", function () {
+  validaddress(this);
+});
+
+//validation du nom
+const validaddress = function (inputaddress) {
+  //Création de la reg Exp pour la validation de l'adressse
+  let addressRegExp = new RegExp(
+    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'°s*]+$",
+    "g" ///////attention revoir les espaces pour adresse valide
+  );
+
+  //Récupération de la balise où se situera le message d'erreur si false
+  let addressErrorMsg = document.querySelector("#addressErrorMsg");
+
+  if (addressRegExp.test(inputaddress.value) == false) {
+    addressErrorMsg.textContent = "Attention ! Adresse Invalide";
+    document.querySelector("#address").style.background = "#fbbcbc";
+  } else {
+  }
+};
+
+// 5 Ecouter la modification de la ville
+form.city.addEventListener("change", function () {
+  validcity(this);
+});
+
+//validation de la ville
+const validcity = function (inputcity) {
+  //Création de la reg Exp pour la validation de la ville
+  let cityRegExp = new RegExp(
+    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'s*]+$",
+    "g" ///////attention revoir les espaces pour adresse valide
+  );
+
+  //Récupération de la balise où se situera le message d'erreur si false
+  let cityErrorMsg = document.querySelector("#cityErrorMsg");
+
+  if (cityRegExp.test(inputcity.value) == false) {
+    cityErrorMsg.textContent = "Attention ! Ville Invalide";
+    document.querySelector("#city").style.background = "#fbbcbc";
+  } else {
+  }
+};
+
+/****************************************FIN Formualire*************************************/
+
+/***************************Validation de la commande***************************************/
+
+let order = document.querySelector("#order");
+
+order.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  //constitution objet contact
+
+  const contact = {
+    firstName: validFirstName.value,
+    lastName: validlastName.value,
+    adress: validaddress.value,
+    city: validcity.value,
+    email: validEmail.value,
+  };
+});
+
