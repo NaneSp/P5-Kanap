@@ -196,33 +196,32 @@ else {
       articleCartItemContentSettingsDelete.appendChild(articleDelete);
       articleDelete.className = "deleteItem";
       articleDelete.innerHTML = "Supprimer";
-
+      //console.log(articleDelete);
       
-      
-      
-
-    }
-
-    deleteItems();
-  });
-/*****************************delete**************************************/
-
-function deleteItems(){
-  let deleteBtn = document.querySelectorAll(".deleteItem");
-  console.log(deleteBtn);
-
-for (let i = 0; i < deleteBtn.length; i++){
-  deleteBtn[i].addEventListener("click",(event)=>{
-    event.preventDefault();
-    console.log(event);
-
-    let idDelete = cart[i].idSelected;
-    console.log(idDelete);
+      /*****************************delete**************************************/
+        
     
+      
 
-  })
-}
-}
+
+
+        
+
+      
+      
+    
+    }
+    
+  
+    
+  });
+
+  
+
+  
+  
+
+
 
 }
 
