@@ -97,15 +97,17 @@ addToCartBtn.addEventListener("click", function () {
       cartLS = []; // cartLS = array vide
       cartLS.push(aSelected); //push ajout un élément
       localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
-      alert(
+      window.confirm(
         `Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier.`
-      );
+      )
+        /********VOIR POUR LIEN VERS PAGE ACCUEIL********/
+      
     }
 
     //si on ajoute un produit au panier, si celui-ci était déjà présent ds le panier (même id + même couleur), on incrémente simplement la quantité du produit correspondant dans l'array (soit si ls est différent de vide)
     /*2*/
     else if (cartLS != null) {
-      //Création d'une variable des articles trouvés ds le array LS
+      //Création d'une variable contenant les  articles trouvés ds le array LS
       let articleFound = cartLS.find(
         //(ds le ls je veux trouver les élément ayant l'id  strictement égal aux id des articles que j'ai déjà selectionné (vérifie valeur et type))
         //(---ET (vérifie que les 2 conditions st ttes les 2 true) je veux trouver les éléments ayant la couleur strictement égale aux couleurs déjà sélectionnées (vérifie valeur et type))
@@ -130,9 +132,10 @@ addToCartBtn.addEventListener("click", function () {
       else {
         cartLS.push(aSelected);
         localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-        alert(
+        window.confirm(
           `Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier.`
-        );
+        )
+        
       }
     }
   }
