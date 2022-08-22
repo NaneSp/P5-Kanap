@@ -32,7 +32,7 @@ else {
 
   let totalSumArray = []; //création d'un array vide qui récupérera les ss totaux pr calcul prix total (fait avant la boucle afin de n'avoir qu'un seul array)
 
-  let totalQuantityArray =[];
+  let totalQuantityArray = [];
 
   //Création d'une boucle forEach afin de pouvoir récupérer toutes les données
 
@@ -122,7 +122,7 @@ else {
         " Sous Total =  " + data.price * cart.quantitySelected + " €";
       sousTotal.style.fontSize = "20px";
       sousTotal.style.borderBottom = "solid 1px";
-      sousTotal.setAttribute("data-prix", data.price*cart.quantitySelected);
+      sousTotal.setAttribute("data-prix", data.price * cart.quantitySelected);
       //console.log(sousTotal.dataset);//retourne bien les ss ttx
 
       //Création de la balise div
@@ -173,34 +173,29 @@ else {
       //console.log(articleDelete);
     } //fin de function insertItems
 
-    //utilisation de la fonction de calcul de qté totale 
+    //utilisation de la fonction de calcul de qté totale
     function sumQuantity() {
-      
       //console.log(cart.quantitySelected);//retourne bien la quanité par articles ds le panier
       //console.log(totalQuantityArray);//retourne bien le array vide du début
 
       totalQuantityArray.push(cart.quantitySelected);
       //console.log(totalQuantityArray);//retourne bien un tableau avec les qtés
 
-       //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
+      //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
       let total = 0;
       let totalQty = totalQuantityArray.reduce(
-        (previousValue, currentValue) => previousValue + currentValue, total
-      )
-     // console.log(totalQty);//retourne bien la qté totale
-
+        (previousValue, currentValue) => previousValue + currentValue,
+        total
+      );
+      // console.log(totalQty);//retourne bien la qté totale
 
       //affichage de ma quanité totale au bon endroit
       let itemTotalQuantity = document.querySelector("#totalQuantity");
       itemTotalQuantity.textContent = totalQty;
-      
-      
     } //fin fonction calcul qté
-
 
     //utilisation de la fonction de calcul de somme totale du panier
     function sumPrice(data) {
-    
       //console.log(data.price);//retourne bien le prix unitaire des articles
       //console.log(cart.quantitySelected);//retourne bien la qté des articles
 
@@ -209,113 +204,108 @@ else {
 
       //console.log(totalSumArray);//retourne bien le array vide du début
       totalSumArray.push(ssTotal);
-      //console.log(totalSumArray);//retoure un tableau de  prix 
+      //console.log(totalSumArray);//retoure un tableau de  prix
 
-         //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
-        let sum = 0;
-        let sumTotal = totalSumArray.reduce(
-          (previousValue, currentValue) => previousValue + currentValue, sum
-        );
-       // console.log(sumTotal);// retourne bien la somme totale calculée
+      //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
+      let sum = 0;
+      let sumTotal = totalSumArray.reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        sum
+      );
+      // console.log(sumTotal);// retourne bien la somme totale calculée
 
-        //affichage de la somme totale au bon endroit
-        let totalPrice = document.querySelector("#totalPrice");
-        totalPrice.textContent = sumTotal;
-
-
-
-
-
-
-      
-      
-    
+      //affichage de la somme totale au bon endroit
+      let totalPrice = document.querySelector("#totalPrice");
+      totalPrice.textContent = sumTotal;
     } //fin de calcul prix total
 
     //utilisation de la fonction de modification de qté
     function changeQuantity() {
       let inputQuantity = document.querySelectorAll(".itemQuantity");
       //console.log(inputQuantity);// retourne bien les inputs sous forme de NodeLit car utilisation du querySelectorAll (A SAVOIR peut être transformé en tableau avec array.from())
-      
-      for(let k = 0; k < inputQuantity.length; k++){
 
-        inputQuantity[k].addEventListener("change", (event) =>{
-
+      for (let k = 0; k < inputQuantity.length; k++) {
+        inputQuantity[k].addEventListener("change", (event) => {
           //console.log(inputQuantity[k].value);//retourne bien la qté présente ds le input
-          let quantity = inputQuantity[k].value;
-          console.log(quantity);//retourne bien la qté au clic
+          let quantityClic = inputQuantity[k].value;
+          console.log(quantityClic); //retourne bien la qté au clic
+
           //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le input qté... ET la couleur...)
           let idChange = inputQuantity[k].closest(".cart__item").dataset.id;
-          console.log(idChange);//retourne bien l'id de l'article au clic sur ajouter/soutraire 
+          //console.log(idChange); //retourne bien l'id de l'article au clic sur ajouter/soutraire
           let colorChange = inputQuantity[k].closest(".cart__item").dataset.color;
-          console.log(colorChange);//retourne bien la couleur de l'article au clic sur ajouter/soustraire
+          //console.log(colorChange); //retourne bien la couleur de l'article au clic sur ajouter/soustraire
+
           
-          const index = cartLS.findIndex( kanap =>
-            kanap.idSelected === idChange &&
-            kanap.colorSelected === colorChange
+          // rechercher l'article que l'on doit modifier (trouve moi le 1er élémebt qui correspond à ma demande )
+          const searchChange = cartLS.findIndex( kanap =>
+          kanap.idSelected === idChange &&
+          kanap.colorSelected === colorChange
             );
 
-            
+            //si on trouve cet article ET que la qté au clic est supérieure ou égale à 1 ET que la qté au clic est inférieure ou égale à 100 alors 
+          if ( searchChange != undefined && quantityClic >= 1 && quantityClic <=100){
+
+
+          }
+          //je veux alors que la quantité s'ajoute au LS et se mette à jour
+          //ajout/stockage des infos dans le LS
+          localStorage.setItem("LSArticle", JSON.stringify(cartLS));
+          //message d'alerte informant l'utilisateur que l'article est delete
+          alert("Vous venez de modifier la quantité de cet article");
+
           
-        
 
-            //ajout/stockage des infos dans le LS
-            localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-
-            //window.location.href = "cart.html";
           
 
-        })//fin de l'écoute
-      }//fin de l'itération
-      
+
+          
+
+          
+        }); //fin de l'écoute
+      } //fin de l'itération
     } //fin fonction modif de qté
 
     //utilisation de la fonction supprimer l'article
-    function deleteArticle() { // ATTENTION A REVOIR 1ere suppression envoie autant d'alerte que d'article présent 
+    function deleteArticle() {
+      // ATTENTION A REVOIR 1ere suppression envoie autant d'alerte que d'article présent
 
       //création de la variable qui récupère tous les pseudos boutons "supprimer"
       let btnsDelete = document.querySelectorAll(".deleteItem");
       //console.log(btnsDelete); //retourne bien les btn supprimer ss forme de nodeList
 
-      //création d'une boucle for en itérant 
-      for(let j = 0; j < btnsDelete.length; j++){
+      //création d'une boucle for en itérant
+      for (let j = 0; j < btnsDelete.length; j++) {
         //j est égal à 0, est ce que j est inférieur à btnsDelete, bah oui j'ajoute 1 et je refais un tour
         //console.log(j);//retourne l'index de chaque tour
 
         //écoute du btn au clicl
-        btnsDelete[j].addEventListener("click", (event) =>{
-
-        
+        btnsDelete[j].addEventListener("click", (event) => {
           //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le "btn" SUPPRIMER... ET la couleur...)
           let idDelete = btnsDelete[j].closest(".cart__item").dataset.id;
-          console.log(idDelete);//retourne bien l'id de l'article au clic sur supprimer 
+          console.log(idDelete); //retourne bien l'id de l'article au clic sur supprimer
           let colorDelete = btnsDelete[j].closest(".cart__item").dataset.color;
-          console.log(colorDelete);//retourne bien la couleur de l'article au clic sur supprimer
+          console.log(colorDelete); //retourne bien la couleur de l'article au clic sur supprimer
 
-          //dans le ls je veux trouver les articles n'étant STRICTEMENT pas égal (!== opérateur d'inégalité qui vérifie valeur et type) (trouve moi les id qui ne correspondent pas à mon clic etc...) je dissocie les articles afin de supprimer le bon  
-          cartLS = cartLS.filter ( kanap =>
-            kanap.idSelected !== idDelete ||
-            kanap.colorSelected !== colorDelete);
+          //dans le ls je veux trouver les articles n'étant STRICTEMENT pas égal (!== opérateur d'inégalité qui vérifie valeur et type) (trouve moi les id qui ne correspondent pas à mon clic etc...) je dissocie les articles afin de supprimer le bon
+          cartLS = cartLS.filter(
+            (kanap) =>
+              kanap.idSelected !== idDelete ||
+              kanap.colorSelected !== colorDelete
+          );
 
-            //ajout/stockage des infos dans le LS
-            localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-             //message d'alerte informant l'utilisateur que l'article est delete
-            alert("Cet article a bien été supprimé de votre panier");
+          //ajout/stockage des infos dans le LS
+          localStorage.setItem("LSArticle", JSON.stringify(cartLS));
+          //message d'alerte informant l'utilisateur que l'article est delete
+          alert("Cet article a bien été supprimé de votre panier");
 
-            //mise à jour de la fenêtre 
-            window.location.href = "cart.html";
-          
-
-
-        })//fin de l'écoute
-
-      }//fin de l'itération
-    
+          //mise à jour de la fenêtre
+          window.location.href = "cart.html";
+        }); //fin de l'écoute
+      } //fin de l'itération
     } //fin de la fonction supprimer
   }); //fin du forEAch de la ligne 43
 } //fin du else
-
-
 
 /************************************************Formulaire ******************************************/
 
@@ -324,8 +314,6 @@ else {
 //création d'une variable récupérant la place du formulaire
 let form = document.querySelector(".cart__order__form");
 //console.log(form.firstName);// retourne l'input firstName du formulaire
-
-
 
 // 1 Ecouter la modification de l'email
 
@@ -361,8 +349,6 @@ const validEmail = function (inputEmail) {
   }
 };
 
-
-
 // 2 Ecouter la modification du prénom
 form.firstName.addEventListener("change", function () {
   validFirstName(this);
@@ -382,8 +368,6 @@ const validFirstName = function (inputFirstName) {
   } else {
   }
 };
-
-
 
 // 3 Ecouter la modification du nom
 form.lastName.addEventListener("change", function () {
@@ -451,16 +435,9 @@ const validcity = function (inputcity) {
   }
 };
 
-
-
 /****************************************FIN Formualire*************************************/
 
-
-
-
 /***************************Validation de la commande***************************************/
-
-
 
 /**NON FONCTIONNEL IDEE DE DEPART**/
 
@@ -530,5 +507,3 @@ order.addEventListener("click", (event) => {
   
 
 });*/
-
-
