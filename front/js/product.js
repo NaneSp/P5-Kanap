@@ -97,10 +97,12 @@ addToCartBtn.addEventListener("click", function () {
       cartLS = []; // cartLS = array vide
       cartLS.push(aSelected); //push ajout un élément
       localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
-      window.confirm(
-        `Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier.`
-      )
-        /********VOIR POUR LIEN VERS PAGE ACCUEIL********/
+      alert(
+        `Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier. 
+        
+        Pour consulter la page panier cliquer sur OK`
+      );{window.location.href = "cart.html";}//lien vers panier
+    
       
     }
 
@@ -124,17 +126,21 @@ addToCartBtn.addEventListener("click", function () {
         articleFound.quantitySelected = newQuantity;
         localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
         alert(
-          ` Vous avez ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} dans votre panier.`
-        );
+          ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} dans votre panier.
+          
+          Pour consulter la page panier cliquer sur OK`
+        );{window.location.href = "cart.html";}//lien vers page panier
       }
       //sinon ajouter l'article simplement
       /*B*/
       else {
         cartLS.push(aSelected);
         localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-        window.confirm(
-          `Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier.`
-        )
+        alert(
+          ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} dans votre panier.
+          
+          Pour consulter la page panier cliquer sur OK`
+        );{window.location.href = "cart.html";}//lien vers page panier
         
       }
     }

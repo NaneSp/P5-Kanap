@@ -224,11 +224,19 @@ else {
       let inputQuantity = document.querySelectorAll(".itemQuantity");
       //console.log(inputQuantity);// retourne bien les inputs sous forme de NodeLit car utilisation du querySelectorAll (A SAVOIR peut être transformé en tableau avec array.from())
 
+      //console.log("quantité LS",cart.quantitySelected);
+      let qtyLS = parseInt(cart.quantitySelected);
+      //console.log(qtéLS);
+
       for (let k = 0; k < inputQuantity.length; k++) {
         inputQuantity[k].addEventListener("change", (event) => {
+
+          //event.preventDefault();
+          //console.log(inputQuantity[k].quantitySelected);//undefined
+
           //console.log(inputQuantity[k].value);//retourne bien la qté présente ds le input
-          let quantityClic = inputQuantity[k].value;
-          console.log(quantityClic); //retourne bien la qté au clic
+          let quantityClic = parseInt(inputQuantity[k].value);
+          console.log("qté ajoutée au clic",quantityClic); 
 
           //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le input qté... ET la couleur...)
           let idChange = inputQuantity[k].closest(".cart__item").dataset.id;
@@ -238,21 +246,35 @@ else {
 
           
           // rechercher l'article que l'on doit modifier (trouve moi le 1er élémebt qui correspond à ma demande )
-          const searchChange = cartLS.findIndex( kanap =>
+          const searchChange = cartLS.filter( kanap =>
           kanap.idSelected === idChange &&
           kanap.colorSelected === colorChange
             );
-
+          //console.log("confirmation de l'article sélectionné",searchChange);//retourne bien l'article sélectionné avec la qté du LS inital
+          
             //si on trouve cet article ET que la qté au clic est supérieure ou égale à 1 ET que la qté au clic est inférieure ou égale à 100 alors 
           if ( searchChange != undefined && quantityClic >= 1 && quantityClic <=100){
 
+          //console.log("remémore moi le LS de BASE",cartLS);
+            //je veux alors que la quantité s'ajoute au LS et se mette à jour
+          
+            
+          
+            
 
+            //j'ajoute la nouvelle qté au ls
+
+            localStorage.setItem("LSArticle", JSON.stringify(cartLS));
+
+          
           }
-          //je veux alors que la quantité s'ajoute au LS et se mette à jour
-          //ajout/stockage des infos dans le LS
-          localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-          //message d'alerte informant l'utilisateur que l'article est delete
-          alert("Vous venez de modifier la quantité de cet article");
+          else{
+
+            alert ("Vous devez saisir une quantité entre 1 minimum et 100 maximum ")
+          }
+
+          
+          
 
           
 
@@ -281,6 +303,9 @@ else {
 
         //écoute du btn au clicl
         btnsDelete[j].addEventListener("click", (event) => {
+
+          //event.preventDefault();
+
           //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le "btn" SUPPRIMER... ET la couleur...)
           let idDelete = btnsDelete[j].closest(".cart__item").dataset.id;
           console.log(idDelete); //retourne bien l'id de l'article au clic sur supprimer
