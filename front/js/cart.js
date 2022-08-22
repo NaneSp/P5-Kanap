@@ -501,12 +501,14 @@ order.addEventListener("click", (event) => {
   }//fin du order
 
   //envoi des données de la commande (panier + formulaire contact) au serveur
+  //requête POST on envoie du json au service web 
   const postServer = {
 
     method : "POST",
-    body : JSON.stringify(order),
+    body : JSON.stringify(order),//je transforme en json mon order
     headers : {
-      "Content-Type" : "application/json"
+      "Content-Type" : "application/json" //on prévient le service qu'il va recevoir du json
+      "Accept" : "application/json"
     }
   };
 
@@ -519,8 +521,7 @@ order.addEventListener("click", (event) => {
 
   .then(function(data){
 
-    localStorage.clear();
-    localStorage.setItem("orderId", data.orderId);
+  
 
     document.location.href = "../html/confirmation.html";
   })
@@ -529,4 +530,5 @@ order.addEventListener("click", (event) => {
   
 
 });*/
+
 
