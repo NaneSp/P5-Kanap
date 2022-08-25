@@ -241,16 +241,16 @@ else {
       inputQuantity.forEach((qtyArticle) =>{
         qtyArticle.addEventListener("change", (event) =>{
 
-          console.log(qtyArticle);//retourne bien l'input pr lequel on modifie la qté (en + ou-)
-          console.log(qtyArticle.value)//retourne bien la valeur de l'input dont on a modifié la qté
+          //console.log(qtyArticle);//retourne bien l'input pr lequel on modifie la qté (en + ou-)
+          //console.log(qtyArticle.value)//retourne bien la valeur de l'input dont on a modifié la qté
           let qtyArticleValue = qtyArticle.value;
 
            //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le input qté... ET la couleur...)
           let idChange = qtyArticle.closest(".cart__item").dataset.id;
-          console.log(idChange);//retourne bien l'id de l'article au clic sur ajouter/soutraire 
+          //console.log(idChange);//retourne bien l'id de l'article au clic sur ajouter/soutraire 
           
           let colorChange = qtyArticle.closest(".cart__item").dataset.color;
-          console.log(colorChange);//retourne bien la couleur de l'article au clic sur ajouter/soustraire
+          //console.log(colorChange);//retourne bien la couleur de l'article au clic sur ajouter/soustraire
 
           const foundArticle = cartLS.filter(
             (kanap) =>
@@ -258,12 +258,17 @@ else {
             kanap.colorSelected === colorChange          
             );
 
+            console.log(foundArticle);//retourne bien le bon article au clic de l'input
+            console.log(cart.quantitySelected);//retourne la quantité du ls
+            console.log(qtyArticleValue);//retourne bien la nvelle qté
+            
             //je créée une condition afin de maîtriser la qté utilisée par le client
             //si tu trouves l'article sélectionné ET que sa qté est supérieure ou égale à 1 ET inférieure ou = à 100 
             if( foundArticle != undefined && qtyArticleValue >= 1 && qtyArticleValue <= 100){
 
               cart.quantitySelected = qtyArticleValue; 
               localStorage.setItem("LSArticle", JSON.stringify(cartLS));//je mets à jour le localStorage
+              alert("Vous venez de modifier la quantité de votre article!")
             }
             else{
               alert("Vous devez sélectionner une quanté entre 1 et 100 unités!")
@@ -287,7 +292,7 @@ else {
       //création d'une boucle for en itérant 
       for(let j = 0; j < btnsDelete.length; j++){
         //j est égal à 0, est ce que j est inférieur à btnsDelete, bah oui j'ajoute 1 et je refais un tour
-        console.log(j);//retourne l'index de chaque tour
+        //console.log(j);//retourne l'index de chaque tour
         //console.log(btnsDelete.length);
 
         //écoute du btn au clicl
