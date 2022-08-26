@@ -1,6 +1,7 @@
 /*But : importer de façon dynamique les différents articles du site KANAP depuis l'api avec la méthode fetch*/
 
 //récupération des informations de l'api :
+//fetch : protocole://nom du domaine:port/chemin de la ressource
 fetch("http://localhost:3000/api/products")
   //promesse faite à l'api si succès:
 

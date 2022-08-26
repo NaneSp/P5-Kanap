@@ -1,12 +1,7 @@
 /*But : récupérer les articles du LocalStorage , pouvoir modifier leur quantité directement depuis cette page ainsi qu'avoir la possibilité de supprimer les articles souhaités*/
 
 //Récupération du LocalStorage
-
-function localStorageView() {
-  return JSON.parse(localStorage.getItem("LSArticle"));
-}
-
-let cartLS = localStorageView();
+let cartLS = JSON.parse(localStorage.getItem("LSArticle"));
 //console.log(cartLS); // renvoi vien les articles du LS ou null si pas d'article
 
 //si le panier est vide
@@ -268,10 +263,10 @@ else {
 
               cart.quantitySelected = qtyArticleValue; 
               localStorage.setItem("LSArticle", JSON.stringify(cartLS));//je mets à jour le localStorage
-              alert("Vous venez de modifier la quantité de votre article!")
+              alert("Vous venez de modifier la quantité de votre article!");{window.location.href = "cart.html";}//lien vers panier
             }
             else{
-              alert("Vous devez sélectionner une quanté entre 1 et 100 unités!")
+              alert("Vous devez sélectionner une quanté entre 1 et 100 unités!");{window.location.href = "cart.html";}//lien retour panier
             }
 
 
@@ -298,7 +293,6 @@ else {
         //écoute du btn au clicl
         btnsDelete[j].addEventListener("click", (event) =>{
 
-        
           //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le "btn" SUPPRIMER... ET la couleur...)
           let idDelete = btnsDelete[j].closest(".cart__item").dataset.id;
           console.log(idDelete);//retourne bien l'id de l'article au clic sur supprimer 
@@ -313,12 +307,7 @@ else {
             //ajout/stockage des infos dans le LS
             localStorage.setItem("LSArticle", JSON.stringify(cartLS));
              //message d'alerte informant l'utilisateur que l'article est delete
-            alert("Cet article a bien été supprimé de votre panier");
-
-            //mise à jour de la fenêtre 
-            window.location.href = "cart.html";
-          
-
+            alert("Cet article a bien été supprimé de votre panier");;{window.location.href = "cart.html";}//lien vers panier
 
         })//fin de l'écoute
 
@@ -330,7 +319,7 @@ else {
 
 
 
-/************************************************Formulaire ******************************************/
+/*********************************Formulaire ******************************/
 
 //Expressions rationnelles ou Expressions régulières = Regex
 
@@ -371,6 +360,7 @@ const validEmail = function (inputEmail) {
     emailErrorMsg.textContent = "Attention ! Email invalide";
     document.querySelector("#email").style.background = "#fbbcbc";
   } else {
+    //sinon c'est ok laisse le client taper
   }
 };
 
@@ -393,6 +383,7 @@ const validFirstName = function (inputFirstName) {
     firstNameErrorMsg.textContent = "Attention ! Prénom Invalide";
     document.querySelector("#firstName").style.background = "#fbbcbc";
   } else {
+    //sinon c'est ok laisse le client taper
   }
 };
 
@@ -400,31 +391,32 @@ const validFirstName = function (inputFirstName) {
 
 // 3 Ecouter la modification du nom
 form.lastName.addEventListener("change", function () {
-  validlastName(this);
+  validLastName(this);
 });
 
 //validation du nom
-const validlastName = function (inputlastName) {
+const validLastName = function (inputLastName) {
   //Création de la reg Exp pour la validation email
   let lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ--]+$", "g");
 
   //Récupération de la balise où se situera le message d'erreur si false
   let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
 
-  if (lastNameRegExp.test(inputlastName.value) == false) {
+  if (lastNameRegExp.test(inputLastName.value) == false) {
     lastNameErrorMsg.textContent = "Attention ! Nom Invalide";
     document.querySelector("#lastName").style.background = "#fbbcbc";
   } else {
+    //sinon c'est ok laisse le client taper
   }
 };
 
 // 4 Ecouter la modification de l'adresse
 form.address.addEventListener("change", function () {
-  validaddress(this);
+  validAddress(this);
 });
 
 //validation du nom
-const validaddress = function (inputaddress) {
+const validAddress = function (inputAddress) {
   //Création de la reg Exp pour la validation de l'adressse
   let addressRegExp = new RegExp(
     "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'°]+$",
@@ -434,20 +426,21 @@ const validaddress = function (inputaddress) {
   //Récupération de la balise où se situera le message d'erreur si false
   let addressErrorMsg = document.querySelector("#addressErrorMsg");
 
-  if (addressRegExp.test(inputaddress.value) == false) {
+  if (addressRegExp.test(inputAddress.value) == false) {
     addressErrorMsg.textContent = "Attention ! Adresse Invalide";
     document.querySelector("#address").style.background = "#fbbcbc";
   } else {
+    //sinon c'est ok laisse le client taper
   }
 };
 
 // 5 Ecouter la modification de la ville
 form.city.addEventListener("change", function () {
-  validcity(this);
+  validCity(this);
 });
 
 //validation de la ville
-const validcity = function (inputcity) {
+const validCity = function (inputCity) {
   //Création de la reg Exp pour la validation de la ville
   let cityRegExp = new RegExp(
     "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'s*]+$",
@@ -457,90 +450,112 @@ const validcity = function (inputcity) {
   //Récupération de la balise où se situera le message d'erreur si false
   let cityErrorMsg = document.querySelector("#cityErrorMsg");
 
-  if (cityRegExp.test(inputcity.value) == false) {
+  if (cityRegExp.test(inputCity.value) == false) {
     cityErrorMsg.textContent = "Attention ! Ville Invalide";
     document.querySelector("#city").style.background = "#fbbcbc";
   } else {
+    //sinon c'est ok laisse le client taper
   }
 };
 
 
 
-/****************************************FIN Formualire*************************************/
+/**************************FIN Formualire*******************************/
 
 
 
 
-/***************************Validation de la commande***************************************/
+/********************Validation de la commande**************************/
 
+/*But : une fois le formulaire rempli, on envoie (via le bouton "commander") au serveur les données de celui ainsi que le contenu du panier, le client, liu, sera renvoyé vers la page de confirmation et le serveur lui renverra son numéro de commande... si tout ce passe bien*/
 
 
 /**NON FONCTIONNEL IDEE DE DEPART**/
+/*FAIRE UNE VERIF DU FORMULAIRE AVANT ENVOI*/
 
-/*
 //création de la variable récupérant le input "commander"
 let order = document.querySelector("#order");
 
-//j'écoute le bouton "commander" afin de pouvoir envoyer ma commande au localStorage
+//j'écoute le bouton "commander" afin de pouvoir envoyer ma commande au serveur
 order.addEventListener("click", (event) => {
   
 
   //récupération des infos du client
   let inputFirstName = document.querySelector("#firstName");
+  
   let inputLastName = document.querySelector("#lastName");
-  let inputAdress = document.querySelector("#adress");
+ 
+  let inputAddress = document.querySelector("#address");
+ 
   let inputCity = document.querySelector("#city");
-  let inputMail = document.querySelector("email");
+  
+  let inputMail = document.querySelector("#email");
+  //console.log(inputMail.value);
 
-  //création d'un array du LS
-  let arrayLS =[];// création d'un array vide
-  for(let m = 0; m < cartLS.length; m++){//création d'une boucle qui va récupérer les données
-    arrayLS.push(cartLS[i].idSelected);//push dans le array
-  }
+  //création d'un array du LS = tableau de produits (cf doc spécifications fonctionnelle dernière page)
+
+  let products = [];
+  cartLS.forEach(order => {
+    products.push(order.idSelected)
+
+   // console.log(order.idSelected);
+  });
+  //console.log(products);//retourne bien les produits du ls
+  
 
 
-  //création d'une constante de commande
+  //création d'une constante de commande (je crée un objet qui récupérera les infos des clients + un tableau de produits ls afin de les envoyer au server) (cf partie back dossier controllers fichier product.js)
   const order = {
 
     contact : {
-    firstName: validFirstName.value,
-    lastName: validlastName.value,
-    adress: validaddress.value,
-    city: validcity.value,
-    email: validEmail.value,
+
+    firstName: inputFirstName.value,
+    lastName: inputLastName.value,
+    address: inputAddress.value,
+    city: inputCity.value,
+    email: inputMail.value,
   },
 
-      panier : arrayLS,
-  }//fin du order
+      products : products,
+  }//fin du contactOrder
 
-  //envoi des données de la commande (panier + formulaire contact) au serveur
+  /******************Ajouter une condition si le form n'est pas bien rempli ou pas intégralement rempli *********************/
+
+  //envoi des données (récupérées ci dessus )de la commande (panier + formulaire contact) au serveur
   const postServer = {
 
     method : "POST",
-    body : JSON.stringify(order),
     headers : {
+      "Accept" : "application/json",
       "Content-Type" : "application/json"
-    }
+    },
+    body : JSON.stringify(order),
   };
-
   
-  fetch("http://localhost:3000/api/products/order", postServer)
+ fetch("http://localhost:3000/api/products/order", postServer)
 
   .then(function (response) {
     return response.json();
   })
 
-  .then(function(data){
+  .then ((data) => {
 
-    localStorage.clear();
-    localStorage.setItem("orderId", data.orderId);
+   // console.log(order);//retourne bien l'objet contact et le array ls
+    window.location.href = `confirmation.html?orderId=${data.orderId}`;
 
-    document.location.href = "../html/confirmation.html";
   })
+
+  .catch((error) =>{
+    alert("erreur")
+  })
+
+  
+    
+  
   
 
   
 
-});*/
+});
 
 
