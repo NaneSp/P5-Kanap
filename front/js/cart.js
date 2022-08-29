@@ -1,10 +1,10 @@
 /*But : récupérer les articles du LocalStorage , pouvoir modifier leur quantité directement depuis cette page ainsi qu'avoir la possibilité de supprimer les articles souhaités*/
 
-//Récupération du LocalStorage
+//récupération du LocalStorage
 let cartLS = JSON.parse(localStorage.getItem("LSArticle"));
-//console.log(cartLS); // renvoi vien les articles du LS ou null si pas d'article
+//console.log(cartLS); //retourne bien le LS (si vide renvoi null)
 
-//si le panier est vide
+//SI le panier est VIDE
 if (cartLS === null) {
   const cartTitle = document.querySelector("h1"); //récupération de l'emplacement afin de mettre le msg si vide
 
@@ -15,162 +15,272 @@ if (cartLS === null) {
   document.querySelector(".cart__order").style.display = "none"; //masque le forulaire si panier vide
   document.querySelector(".cart__price").style.display = "none"; // masque le prix total si panier vide
 }
-//SINON si panier est non vide
+//SINON le panier n'est PAS vide
 else {
-  /*test*/
-  /*cartLS.forEach(item => console.log(item));
-
-  cartLS.forEach(item => console.log(item.idSelected));
-  cartLS.forEach(item => console.log(item.nameSelected));
-  cartLS.forEach(item => console.log(item.quantitySelected));
-  cartLS.forEach(item => console.log(item.colorSelected));*/
-
   let totalSumArray = []; //création d'un array vide qui récupérera les ss totaux pr calcul prix total (fait avant la boucle afin de n'avoir qu'un seul array)
+  //console.log(totalSumArray);//retourne bien array vide
 
-  let totalQuantityArray =[];
+  let totalQuantityArray = []; //création d'un array vide qui récupérera la somme totale à afficher (fait avant la boucle afin de n'avoir qu'un seul array)
+  //console.log(totalQuantityArray);//retourne bien array vide
 
-  //Création d'une boucle forEach afin de pouvoir récupérer toutes les données
+  let showCart = []; //création d'un array vide pour récupérer les données
 
+  //création d'une boucle afin de récupérer les données
   cartLS.forEach(function (cart) {
-    //console.log(cart.idSelected);//recherche de l'id OK
-
     let id = cart.idSelected;
-    //console.log(id); //retourne bien les id des éléments séléctionnés se trouvant ds le LS
+    //console.log(id);//retourne bien les id du ls
 
-    const url = `http://localhost:3000/api/products/${id}`; // création d'une constante pr récupérer les données de l'api
-    //console.log(url);//retourne bien l'url avec l'id des éléments du LS
+    /******************INSERTION d'une partie des éléments DS LE DOM****************************************/
+
+    //Création balise article
+    const article = document.createElement("article"); //Créé un élément article (en exemple ds le html)
+    document.querySelector("#cart__items").appendChild(article);
+    article.className = "cart__item"; //créé la class de l'article
+    article.setAttribute("data-id", cart.idSelected); //modifie l'attribut, prend en compte data id et l'article selectionné
+    article.setAttribute("data-color", cart.colorSelected); //modifie l'attribut, prend en compte data-color et l'article selectionné
+
+    //Création balise div pour l'image
+    const articleImg = document.createElement("div");
+    article.appendChild(articleImg);
+    articleImg.className = "cart__item__img";
+
+    //Création de la balise div pour la description
+    const articleCartItemContent = document.createElement("div");
+    article.appendChild(articleCartItemContent);
+    articleCartItemContent.className = "cart__item__content";
+
+    //Création de la balise div apparaissant ds le css pour le prix
+    const articleCartItemContentDescription = document.createElement("div");
+    articleCartItemContent.appendChild(articleCartItemContentDescription);
+    articleCartItemContentDescription.className =
+      "cart__item__content__titlePrice";
+
+    //Création de la balise titre
+    const articleH2 = document.createElement("h2");
+    articleCartItemContentDescription.appendChild(articleH2);
+    articleH2.textContent = cart.nameSelected; //récupération du nom ds le LS (puisque ns en avions besoin pour les alertes)
+    //console.log(articleH2); // retourne bien les noms des articles présents ds le LS ds la console
+
+    //Création de la balise p contenant la couleur
+    const articleColor = document.createElement("p");
+    articleCartItemContentDescription.appendChild(articleColor);
+    articleColor.textContent = cart.colorSelected; //récupération de la couleur ds le LS
+
+    //Création de la balise div
+    const articleCartItemContentSettings = document.createElement("div");
+    articleCartItemContent.appendChild(articleCartItemContentSettings);
+    articleCartItemContentSettings.className = "cart__item__content__settings";
+
+    //Création de la balise div encadrant la quantité
+    const articleCartItemContentSettingsQuantity =
+      document.createElement("div");
+    articleCartItemContentSettings.appendChild(
+      articleCartItemContentSettingsQuantity
+    );
+    articleCartItemContentSettingsQuantity.className =
+      "cart__item__content__settings__quantity";
+
+    //Création de la balise p contenant la quantité du LS
+    const articleQuantity = document.createElement("p");
+    articleCartItemContentSettingsQuantity.appendChild(articleQuantity);
+    articleQuantity.setAttribute("Qté", totalPrice);
+    articleQuantity.textContent = "Qté :";
+
+    //Création de la balise input permettant la modification de la quantité ds le panier
+    const articleInput = document.createElement("input");
+    articleCartItemContentSettingsQuantity.appendChild(articleInput);
+    articleInput.value = cart.quantitySelected;
+    articleInput.className = "itemQuantity";
+    articleInput.setAttribute("name", cart.idSelected);
+    articleInput.setAttribute("type", "number");
+    articleInput.setAttribute("min", "1");
+    articleInput.setAttribute("max", "100");
+
+  //j'écoute le input afin de prendre en compte les modifications du client (ajout ou retrait de qté)
+  articleInput.addEventListener("change", (event) =>{
+    event.preventDefault();
+
+    console.log(articleInput.value);//retourne bien la valeur du input à chaque changement
+
+    //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le input qté... ET la couleur...)
+
+    let idChange = articleInput.closest(".cart__item").dataset.id;
+    //console.log(idChange);//retourne bien l'id de l'article sélectionné par le chgt ds le input
+    
+    let colorChange = articleInput.closest(".cart__item").dataset.color;
+    //console.log(colorChange);//retourne bien la couleur de l'article sélectionné par le chgt ds le input
+
+    //console.log(cartLS);//retourne bien le LS
+    
+    const foundArticle = cartLS.filter(
+      (kanap) =>
+      kanap.idSelected === idChange &&
+      kanap.colorSelected === colorChange
+    );
+
+    console.log(foundArticle);//retourne bien le bon article au clic de l'input
+    console.log(cart.quantitySelected);//retourne bien la qté présente ds le ls
+//102
+
+      //création d'une condition afin de maîtriser la qté utilisée par le client
+      //si tu trouves l'article ET que sa qté est supérieure ou égale à 1 ET inférieure ou = à 100
+      if (foundArticle !== undefined && articleInput.value >= 1 && articleInput.value <= 100){
+
+        cart.quantitySelected = articleInput.value;
+        localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //je mets à jour le localStorage
+        alert("Vous venez de modifier la quantité de votre article!");
+        {
+          window.location.href = "cart.html";
+        } //lien vers panier
+
+      }
+      else {
+        alert("Vous devez sélectionner une quanté entre 1 et 100 unités!");
+        {
+          window.location.href = "cart.html";
+        } //lien retour panier
+      }
+
+  })//fin de l'écoute
+
+
+
+    //Création de la balise div encadrant la possibilité d'effacer l'article du panier
+    const articleCartItemContentSettingsDelete = document.createElement("div");
+    articleCartItemContentSettings.appendChild(
+      articleCartItemContentSettingsDelete
+    );
+    articleCartItemContentSettingsDelete.className =
+      "cart__item__content__settings__delete";
+
+    //Création de la balise p permettant la suppression des articles selectionnés
+    const articleDelete = document.createElement("p");
+    articleCartItemContentSettingsDelete.appendChild(articleDelete);
+    articleDelete.className = "deleteItem";
+    articleDelete.textContent = "Supprimer";
+    //console.log(articleDelete);
+
+    //j'écoute le "btn" afin de prendre en compte les modifications du client (suppression de l'article)
+    articleDelete.addEventListener("click", (event) =>{
+
+      event.preventDefault();
+
+      console.log(articleDelete);
+
+      let idDelete = articleDelete.closest(".cart__item").dataset.id;
+      console.log(idDelete);//retourne bien le bon id lors du click sur "supprimer"
+      let colorDelete = articleDelete.closest(".cart__item").dataset.color;
+      console.log(colorDelete);//retourne bien la bonne couleur lors du click sur "supprimer"
+
+      const trashArticle = cartLS.filter(
+        (trash) =>
+        trash.idSelected === idDelete &&
+        trash.colorSelected === colorDelete
+      );
+      console.log(trashArticle);//retourne bien le bon article au click sur "supprimer"
+
+      localStorage.setItem("LSArticle", JSON.stringify(cartLS));
+      alert ("Cet article a bien été supprimé de votre panier!")
+
+
+
+
+
+
+    })
+
+    /******************APPEL FETCH POUR RECUPERATION DES DONNEES MANQUANTES***********************************/
+
+    let url = `http://localhost:3000/api/products/${id}`;
+    //console.log(url);//retourne bien l'url avec les id des articles du ls
 
     fetch(url)
       .then(function (response) {
         return response.json();
-      })
+      }) //fin du 1er then
 
-      .then(function (data) {
-        //console.log(data); //retourne bien toute les données (venant de l'api) des canapés sélectionnés
+      .then(function (articleCart) {
+        //création d'un objet qui récupère toutes les données LS et API
+        const object = {
+          id: cart.idSelected,
+          name: cart.nameSelected,
+          price: articleCart.price,
+          color: cart.colorSelected,
+          quantity: cart.quantitySelected,
+          alt: articleCart.altTxt,
+          img: articleCart.imageUrl,
+        };
 
-        insertItems(data); //création d'une fonction afin d'inserer les élements ds le dom + tard
+        //je push les données dans le array vide showCart
+        showCart.push(object);
+        //console.log(showCart); //retourne bien les tableaux avec les objets du LS contenant ttes les données (api +ls)
 
-        sumQuantity(); //création d'une fonction afin de calculer de la qté totale
-        sumPrice(data); //création d'une fonction afin de calculer de la somme totale
-        changeQuantity(); //création d'un fonction afin de pouvoir modifier la qté des articles
-        deleteArticle(); //création d'une fonction afin de pouvoir supprimer un/des article(s)
-      }) //fin du 2nd then ligne 60
 
+        //Création de la balise img
+        const articleImgSrc = document.createElement("img");
+        articleImg.appendChild(articleImgSrc);
+        articleImgSrc.src = articleCart.imageUrl; //récupération de l'imageUrl ds l'api
+        articleImgSrc.alt = articleCart.altText; //récupération du altText ds l'api
+
+        //création de la fonction de calcul de somme totale
+    function sumPrice(){
+        //Création de la balise p contenant le prix unitaire des articles
+        const articlePrice = document.createElement("p");
+        articleH2.appendChild(articlePrice);
+        articlePrice.textContent =
+          "prix à l'unité =   " + articleCart.price + " € ";
+        articlePrice.style.fontSize = "15px";
+        //console.log(articlePrice);//retourne bien les phrases contenant les prix des articles sélectionnés
+        
+        //Création de la balise p contenant un sous total par article sélectionné
+        const sousTotal = document.createElement("p");
+        articleCartItemContentDescription.appendChild(sousTotal);
+        sousTotal.className = "sousTotal";
+        sousTotal.textContent =
+          " Sous Total =  " + articleCart.price * cart.quantitySelected + " €";
+        sousTotal.style.fontSize = "20px";
+        sousTotal.style.borderBottom = "solid 1px";
+        sousTotal.setAttribute(
+          "data-prix",
+          articleCart.price * cart.quantitySelected
+        );
+        
+      //console.log (totalSumArray);//retourne bien le array vide du début
+      //console.log(articleCart.price);//retourne bien les prix
+
+      let ssTotal = articleCart.price * cart.quantitySelected;
+      //console.log(ssTotal);//retourne bien les ss totaux
+
+      totalSumArray.push(ssTotal);
+      //console.log(totalSumArray);//retourne bien le tableau des ss Totaux
+
+        //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
+        let sum = 0;
+        let sumTotal = totalSumArray.reduce(
+          (previousValue, currentValue) => previousValue + currentValue,
+          sum
+        );
+        // console.log(sumTotal);// retourne bien la somme totale calculée
+  
+        //affichage de la somme totale au bon endroit
+        let totalPrice = document.querySelector("#totalPrice");
+        totalPrice.textContent = sumTotal;
+
+
+      }
+
+        sumQuantity(); //appel d'une fonction afin de calculer de la qté totale
+        sumPrice();
+
+      }) //fin du 2nd then
       .catch(function (error) {
         alert("Erreur! Avez-vous bien lancé le serveur local (port 3000)");
-      });
+      }); //fin du catch
 
-    //utilisation de la fonction d'insertion
-    function insertItems(data) {
-      //Création de la balise article dans le dom
-      const articleCart = document.createElement("article"); //Créé un élément article (en exemple ds le html)
-      document.querySelector("#cart__items").appendChild(articleCart);
-      articleCart.className = "cart__item"; //créé la class de l'article
-      articleCart.setAttribute("data-id", cart.idSelected); //modifie l'attribut, prend en compte data id et l'article selectionné
-      articleCart.setAttribute("data-color", cart.colorSelected); //modifie l'attribut, prend en compte data-color et l'article selectionné
 
-      //Création de la balise div (enfant de article)ds le dom
-      const articleImg = document.createElement("div");
-      articleCart.appendChild(articleImg);
-      articleImg.className = "cart__item__img";
 
-      //Création de la balise img
-      const articleImgSrc = document.createElement("img");
-      articleImg.appendChild(articleImgSrc);
-      articleImgSrc.src = data.imageUrl; //récupération de l'imageUrl ds l'api
-      articleImgSrc.alt = data.altText; //récupération du altText ds l'api
-
-      //Création de la balise div
-      const articleCartItemContent = document.createElement("div");
-      articleCart.appendChild(articleCartItemContent);
-      articleCartItemContent.className = "cart__item__content";
-
-      //Création de la balise div apparaissant ds le css
-      const articleCartItemContentDescription = document.createElement("div");
-      articleCartItemContent.appendChild(articleCartItemContentDescription);
-      articleCartItemContentDescription.className =
-        "cart__item__content__titlePrice";
-
-      //Création de la balise titre
-      const articleH2 = document.createElement("h2");
-      articleCartItemContentDescription.appendChild(articleH2);
-      articleH2.textContent = data.name; //récupération du nom ds le LS (puisque ns en avions besoin pour les alertes)
-      //console.log(articleH2); // retourne bien les noms des articles présents ds le LS ds la console
-
-      //Création de la balise p contenant la couleur
-      const articleColor = document.createElement("p");
-      articleCartItemContentDescription.appendChild(articleColor);
-      articleColor.textContent = cart.colorSelected; //récupération de la couleur ds le LS
-
-      //Création de la balise p contenant le prix unitaire des articles
-      const articlePrice = document.createElement("p");
-      articleH2.appendChild(articlePrice);
-      articlePrice.textContent = "prix à l'unité =   " + data.price + " € ";
-      articlePrice.style.fontSize = "15px";
-      //console.log(articlePrice);//retourne bien les phrases contenant les prix des articles sélectionnés
-
-      //Création de la balise p contenant un sous total par article sélectionné
-      const sousTotal = document.createElement("p");
-      articleCartItemContentDescription.appendChild(sousTotal);
-      sousTotal.className = "sousTotal";
-      sousTotal.textContent =
-        " Sous Total =  " + data.price * cart.quantitySelected + " €";
-      sousTotal.style.fontSize = "20px";
-      sousTotal.style.borderBottom = "solid 1px";
-      sousTotal.setAttribute("data-prix", data.price*cart.quantitySelected);
-      //console.log(sousTotal.dataset);//retourne bien les ss ttx
-
-      //Création de la balise div
-      const articleCartItemContentSettings = document.createElement("div");
-      articleCartItemContent.appendChild(articleCartItemContentSettings);
-      articleCartItemContentSettings.className =
-        "cart__item__content__settings";
-
-      //Création de la balise div encadrant la quantité
-      const articleCartItemContentSettingsQuantity =
-        document.createElement("div");
-      articleCartItemContentSettings.appendChild(
-        articleCartItemContentSettingsQuantity
-      );
-      articleCartItemContentSettingsQuantity.className =
-        "cart__item__content__settings__quantity";
-
-      //Création de la balise p contenant la quantité du LS
-      const articleQuantity = document.createElement("p");
-      articleCartItemContentSettingsQuantity.appendChild(articleQuantity);
-      //articleQuantity.setAttribute("Qté", totalPrice);
-      articleQuantity.textContent = "Qté :";
-
-      //Création de la balise input permettant la modification de la quantité ds le panier
-      const articleInput = document.createElement("input");
-      articleCartItemContentSettingsQuantity.appendChild(articleInput);
-      articleInput.value = cart.quantitySelected;
-      articleInput.className = "itemQuantity";
-      articleInput.setAttribute("name", cart.idSelected);
-      articleInput.setAttribute("type", "number");
-      articleInput.setAttribute("min", "1");
-      articleInput.setAttribute("max", "100");
-
-      //Création de la balise div encadrant la possibilité d'effacer l'article du panier
-      const articleCartItemContentSettingsDelete =
-        document.createElement("div");
-      articleCartItemContentSettings.appendChild(
-        articleCartItemContentSettingsDelete
-      );
-      articleCartItemContentSettingsDelete.className =
-        "cart__item__content__settings__delete";
-
-      //Création de la balise p permettant la suppression des articles selectionnés
-      const articleDelete = document.createElement("p");
-      articleCartItemContentSettingsDelete.appendChild(articleDelete);
-      articleDelete.className = "deleteItem";
-      articleDelete.textContent = "Supprimer";
-      //console.log(articleDelete);
-    } //fin de function insertItems
-
-    //utilisation de la fonction de calcul de qté totale 
+      //création de la fonction de calcul de qté totale
     function sumQuantity() {
-      
       //console.log(cart.quantitySelected);//retourne bien la quanité par articles ds le panier
       //console.log(totalQuantityArray);//retourne bien le array vide du début
 
@@ -178,156 +288,48 @@ else {
       totalQuantityArray.push(parseInt(cart.quantitySelected));
       //console.log(totalQuantityArray);//retourne bien un tableau avec les qtés
 
-       //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
+      //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
       let total = 0;
       let totalQty = totalQuantityArray.reduce(
-        (previousValue, currentValue) => previousValue + currentValue, total
-      )
-     // console.log(totalQty);//retourne bien la qté totale
-
+        (previousValue, currentValue) => previousValue + currentValue,
+        total
+      );
+      //console.log(totalQty);//retourne bien la qté totale
 
       //affichage de ma quanité totale au bon endroit
       let itemTotalQuantity = document.querySelector("#totalQuantity");
       itemTotalQuantity.textContent = totalQty;
-      
-      
     } //fin fonction calcul qté
 
-
-    //utilisation de la fonction de calcul de somme totale du panier
-    function sumPrice(data) {
     
-      //console.log(data.price);//retourne bien le prix unitaire des articles
-      //console.log(cart.quantitySelected);//retourne bien la qté des articles
 
-      let ssTotal = data.price * cart.quantitySelected;
-      //console.log(ssTotal);//retourne bien les sous totaux des articles
-
-      //console.log(totalSumArray);//retourne bien le array vide du début
-      totalSumArray.push(ssTotal);
-      //console.log(totalSumArray);//retoure un tableau de  prix 
-
-         //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
-        let sum = 0;
-        let sumTotal = totalSumArray.reduce(
-          (previousValue, currentValue) => previousValue + currentValue, sum
-        );
-       // console.log(sumTotal);// retourne bien la somme totale calculée
-
-        //affichage de la somme totale au bon endroit
-        let totalPrice = document.querySelector("#totalPrice");
-        totalPrice.textContent = sumTotal;
-
-
-
-
-
-
-      
-      
     
-    } //fin de calcul prix total
-
-    //utilisation de la fonction de modification de qté
-    function changeQuantity() {
-      let inputQuantity = document.querySelectorAll(".itemQuantity");
-      //console.log(inputQuantity);// retourne bien les inputs sous forme de NodeLit car utilisation du querySelectorAll (A SAVOIR peut être transformé en tableau avec array.from())
-      
-      inputQuantity.forEach((qtyArticle) =>{
-        qtyArticle.addEventListener("change", (event) =>{
-
-          //console.log(qtyArticle);//retourne bien l'input pr lequel on modifie la qté (en + ou-)
-          //console.log(qtyArticle.value)//retourne bien la valeur de l'input dont on a modifié la qté
-          let qtyArticleValue = qtyArticle.value;
-
-           //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le input qté... ET la couleur...)
-          let idChange = qtyArticle.closest(".cart__item").dataset.id;
-          //console.log(idChange);//retourne bien l'id de l'article au clic sur ajouter/soutraire 
-          
-          let colorChange = qtyArticle.closest(".cart__item").dataset.color;
-          //console.log(colorChange);//retourne bien la couleur de l'article au clic sur ajouter/soustraire
-
-          const foundArticle = cartLS.filter(
-            (kanap) =>
-            kanap.idSelected === idChange &&
-            kanap.colorSelected === colorChange          
-            );
-
-            console.log(foundArticle);//retourne bien le bon article au clic de l'input
-            console.log(cart.quantitySelected);//retourne la quantité du ls
-            console.log(qtyArticleValue);//retourne bien la nvelle qté
-            
-            //je créée une condition afin de maîtriser la qté utilisée par le client
-            //si tu trouves l'article sélectionné ET que sa qté est supérieure ou égale à 1 ET inférieure ou = à 100 
-            if( foundArticle != undefined && qtyArticleValue >= 1 && qtyArticleValue <= 100){
-
-              cart.quantitySelected = qtyArticleValue; 
-              localStorage.setItem("LSArticle", JSON.stringify(cartLS));//je mets à jour le localStorage
-              alert("Vous venez de modifier la quantité de votre article!");{window.location.href = "cart.html";}//lien vers panier
-            }
-            else{
-              alert("Vous devez sélectionner une quanté entre 1 et 100 unités!");{window.location.href = "cart.html";}//lien retour panier
-            }
+  
 
 
 
 
-        })//fin de l'écoute
-      })//fin du forEach
-      
-    } //fin fonction modif de qté
-
-    //utilisation de la fonction supprimer l'article
-    function deleteArticle() { // ATTENTION A REVOIR 1ere suppression envoie autant d'alerte que d'article présent 
-
-      //création de la variable qui récupère tous les pseudos boutons "supprimer"
-      let btnsDelete = document.querySelectorAll(".deleteItem");
-      //console.log(btnsDelete); //retourne bien les btn supprimer ss forme de nodeList
-
-      //création d'une boucle for en itérant 
-      for(let j = 0; j < btnsDelete.length; j++){
-        //j est égal à 0, est ce que j est inférieur à btnsDelete, bah oui j'ajoute 1 et je refais un tour
-        //console.log(j);//retourne l'index de chaque tour
-        //console.log(btnsDelete.length);
-
-        //écoute du btn au clicl
-        btnsDelete[j].addEventListener("click", (event) =>{
-
-          //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le "btn" SUPPRIMER... ET la couleur...)
-          let idDelete = btnsDelete[j].closest(".cart__item").dataset.id;
-          console.log(idDelete);//retourne bien l'id de l'article au clic sur supprimer 
-          let colorDelete = btnsDelete[j].closest(".cart__item").dataset.color;
-          console.log(colorDelete);//retourne bien la couleur de l'article au clic sur supprimer
-
-          //dans le ls je veux trouver les articles n'étant STRICTEMENT pas égal (!== opérateur d'inégalité qui vérifie valeur et type) (trouve moi les id qui ne correspondent pas à mon clic etc...) je dissocie les articles afin de supprimer le bon  
-          cartLS = cartLS.filter ( kanap =>
-            kanap.idSelected !== idDelete ||
-            kanap.colorSelected !== colorDelete);
-
-            //ajout/stockage des infos dans le LS
-            localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-             //message d'alerte informant l'utilisateur que l'article est delete
-            alert("Cet article a bien été supprimé de votre panier");;{window.location.href = "cart.html";}//lien vers panier
-
-        })//fin de l'écoute
-
-      }//fin de l'itération
     
-    } //fin de la fonction supprimer
-  }); //fin du forEAch de la ligne 43
+  }); //fin du foreach de fetch
 } //fin du else
 
 
-
 /*********************************Formulaire ******************************/
+
+
+//REVOIR LES ESPACES DANS LES REGEXXXXXX!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
 
 //Expressions rationnelles ou Expressions régulières = Regex
 
 //création d'une variable récupérant la place du formulaire
 let form = document.querySelector(".cart__order__form");
 //console.log(form.firstName);// retourne l'input firstName du formulaire
-
-
 
 // 1 Ecouter la modification de l'email
 
@@ -364,8 +366,6 @@ const validEmail = function (inputEmail) {
   }
 };
 
-
-
 // 2 Ecouter la modification du prénom
 form.firstName.addEventListener("change", function () {
   validFirstName(this);
@@ -374,7 +374,7 @@ form.firstName.addEventListener("change", function () {
 //validation prénom
 const validFirstName = function (inputFirstName) {
   //Création de la reg Exp pour la validation email
-  let firstNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ--]+$", "g");
+  let firstNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ-- ]+$", "g");
 
   //Récupération de la balise où se situera le message d'erreur si false
   let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
@@ -387,8 +387,6 @@ const validFirstName = function (inputFirstName) {
   }
 };
 
-
-
 // 3 Ecouter la modification du nom
 form.lastName.addEventListener("change", function () {
   validLastName(this);
@@ -397,7 +395,7 @@ form.lastName.addEventListener("change", function () {
 //validation du nom
 const validLastName = function (inputLastName) {
   //Création de la reg Exp pour la validation email
-  let lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ--]+$", "g");
+  let lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ-- ]+$", "g");
 
   //Récupération de la balise où se situera le message d'erreur si false
   let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
@@ -419,7 +417,7 @@ form.address.addEventListener("change", function () {
 const validAddress = function (inputAddress) {
   //Création de la reg Exp pour la validation de l'adressse
   let addressRegExp = new RegExp(
-    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'°]+$",
+    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'° ]+$",
     "g" ///////attention revoir les espaces pour adresse valide
   );
 
@@ -443,7 +441,7 @@ form.city.addEventListener("change", function () {
 const validCity = function (inputCity) {
   //Création de la reg Exp pour la validation de la ville
   let cityRegExp = new RegExp(
-    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'s*]+$",
+    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,' ]+$",
     "g" ///////attention revoir les espaces pour adresse valide
   );
 
@@ -458,19 +456,14 @@ const validCity = function (inputCity) {
   }
 };
 
-
-
 /**************************FIN Formualire*******************************/
-
-
-
 
 /********************Validation de la commande**************************/
 
 /*But : une fois le formulaire rempli, on envoie (via le bouton "commander") au serveur les données de celui ainsi que le contenu du panier, le client, liu, sera renvoyé vers la page de confirmation et le serveur lui renverra son numéro de commande... si tout ce passe bien*/
 
-
 /**NON FONCTIONNEL IDEE DE DEPART**/
+
 /*FAIRE UNE VERIF DU FORMULAIRE AVANT ENVOI*/
 
 //création de la variable récupérant le input "commander"
@@ -478,84 +471,77 @@ let order = document.querySelector("#order");
 
 //j'écoute le bouton "commander" afin de pouvoir envoyer ma commande au serveur
 order.addEventListener("click", (event) => {
-  
-
   //récupération des infos du client
   let inputFirstName = document.querySelector("#firstName");
-  
+
   let inputLastName = document.querySelector("#lastName");
- 
+
   let inputAddress = document.querySelector("#address");
- 
+
   let inputCity = document.querySelector("#city");
-  
+
   let inputMail = document.querySelector("#email");
   //console.log(inputMail.value);
 
   //création d'un array du LS = tableau de produits (cf doc spécifications fonctionnelle dernière page)
 
   let products = [];
-  cartLS.forEach(order => {
-    products.push(order.idSelected)
+  cartLS.forEach((order) => {
+    products.push(order.idSelected);
 
-   // console.log(order.idSelected);
+    // console.log(order.idSelected);
   });
   //console.log(products);//retourne bien les produits du ls
-  
-
 
   //création d'une constante de commande (je crée un objet qui récupérera les infos des clients + un tableau de produits ls afin de les envoyer au server) (cf partie back dossier controllers fichier product.js)
   const order = {
-
-    contact : {
-
-    firstName: inputFirstName.value,
-    lastName: inputLastName.value,
-    address: inputAddress.value,
-    city: inputCity.value,
-    email: inputMail.value,
-  },
-
-      products : products,
-  }//fin du contactOrder
-
-  /******************Ajouter une condition si le form n'est pas bien rempli ou pas intégralement rempli *********************/
-
-  //envoi des données (récupérées ci dessus )de la commande (panier + formulaire contact) au serveur
-  const postServer = {
-
-    method : "POST",
-    headers : {
-      "Accept" : "application/json",
-      "Content-Type" : "application/json"
+    contact: {
+      firstName: inputFirstName.value,
+      lastName: inputLastName.value,
+      address: inputAddress.value,
+      city: inputCity.value,
+      email: inputMail.value,
     },
-    body : JSON.stringify(order),
-  };
-  
- fetch("http://localhost:3000/api/products/order", postServer)
 
-  .then(function (response) {
-    return response.json();
-  })
+    products: products,
+  }; //fin du contactOrder
 
-  .then ((data) => {
+  //ajout d'une condition si champs de formulaire vide
+  //si la valeur de cet input est strictement égal à vide OU....
+  if (
+    inputFirstName.value === "" ||
+    inputLastName.value === "" ||
+    inputAddress.value === "" ||
+    inputCity.value === "" ||
+    inputMail.value === ""
+  ) {
+    alert("Attention champs du formulaire manquant!");
+  }
+  //sinon
+  else {
+    //envoi des données (récupérées ci dessus )de la commande (panier + formulaire contact) au serveur
+    const postServer = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    }; //fin du postServer
 
-   // console.log(order);//retourne bien l'objet contact et le array ls
-    window.location.href = `confirmation.html?orderId=${data.orderId}`;
+    fetch("http://localhost:3000/api/products/order", postServer)
+      .then(function (response) {
+        return response.json();
+      }) //fin du then
 
-  })
+      .then((data) => {
+        // console.log(order);//retourne bien l'objet contact et le array ls
+        window.location.href = `confirmation.html?orderId=${data.orderId}`;
+      }) //fin du 2nd then
 
-  .catch((error) =>{
-    alert("erreur")
-  })
-
-  
-    
-  
-  
-
-  
-
-});
-
+      .catch((error) => {
+        alert("erreur");
+      }); //fin du catch
+  } //fin du else
+}); //fin de l'écoute
 
