@@ -12,6 +12,41 @@ if (cartLS === null) {
   cartTitle.textContent = cartEmpty;
   cartTitle.style.fontSize = "40px";
 
+  const cartSubtitle= document.createElement ("p");
+  cartTitle.appendChild(cartSubtitle);
+  cartSubtitle.className = "subtitle";
+  cartSubtitle.textContent = "N'hésitez pas à retourner à l'accueil pour débuter votre commande!"
+  cartSubtitle.style.fontSize ="20px";
+
+  const buttonAccueil = document.createElement("button");
+  cartTitle.appendChild(buttonAccueil);
+  buttonAccueil.className ="btn";
+  buttonAccueil.textContent ="Accueil";
+  buttonAccueil.style.fontSize =" 22px";
+  buttonAccueil.style.color ="#FFFFFF";
+  buttonAccueil.style.background ="#2C3E50";
+  buttonAccueil.style.padding ="18px 28px";
+  buttonAccueil.style.border ="none";
+  buttonAccueil.style.borderRadius ="40px";
+  buttonAccueil.style.cursor =" pointer";
+
+
+  //écoute du btn accueil afin d'avoir un shadow sur le btn au passage de la souris
+  buttonAccueil.addEventListener("mouseover", (event) => {
+    event.preventDefault();
+    
+    buttonAccueil.style.boxShadow ="rgba(42, 18, 206, 0.9) 0 0 22px 6px";
+
+  })
+
+  //écoute du btn acceuil afin d'activer le lien vers la page accueil au clic sur le btn
+  buttonAccueil.addEventListener("click", (event) =>{
+    event.preventDefault();
+
+    window.location.href ="index.html";
+  })
+
+
   document.querySelector(".cart__order").style.display = "none"; //masque le forulaire si panier vide
   document.querySelector(".cart__price").style.display = "none"; // masque le prix total si panier vide
 }

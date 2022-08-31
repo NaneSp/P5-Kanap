@@ -63,7 +63,9 @@ const nameChoice = document.querySelector("#title");
 const addToCartBtn = document.querySelector("#addToCart");
 
 //Écoute du click du bouton html "ajouter au panier"
-addToCartBtn.addEventListener("click", function () {
+addToCartBtn.addEventListener("click",  (event) => {
+
+  event.preventDefault();//annule l'évênement si il est annulable (l'action par défaut qui appartient à l'évênement ne sera pas faite)
   //Création de l'objet sélectionné (aSelected = article sélectionné )à ajouter au LocalStorage
   const aSelected = {
     idSelected: idChoice,
@@ -89,6 +91,7 @@ addToCartBtn.addEventListener("click", function () {
       "Merci de sélectionner une quantité entre 1 et 100 unités à votre article"
     );
   }
+
 
   //SINON
   else {
