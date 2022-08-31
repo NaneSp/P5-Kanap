@@ -96,60 +96,53 @@ else {
     articleInput.setAttribute("min", "1");
     articleInput.setAttribute("max", "100");
 
-  
-  //j'écoute le input afin de prendre en compte les modifications du client (ajout ou retrait de qté)
-  articleInput.addEventListener("change", (event) =>{
-    event.preventDefault();
+    //j'écoute le input afin de prendre en compte les modifications du client (ajout ou retrait de qté)
+    articleInput.addEventListener("change", (event) => {
+      event.preventDefault();
 
-    console.log(articleInput.value);//retourne bien la valeur du input à chaque changement
+      console.log(articleInput.value); //retourne bien la valeur du input à chaque changement
 
-    //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le input qté... ET la couleur...)
+      //création des variables avec méthode closest qui va rechercher dans le dom les élements qui correspondent au sélecteurs spécifiés (trouve moi l'id (lecture de l'id avec propriété dataset) ds la partie article du dom quand je clique sur le input qté... ET la couleur...)
 
-    let idChange = articleInput.closest(".cart__item").dataset.id;
-    //console.log(idChange);//retourne bien l'id de l'article sélectionné par le chgt ds le input
-    
-    let colorChange = articleInput.closest(".cart__item").dataset.color;
-    //console.log(colorChange);//retourne bien la couleur de l'article sélectionné par le chgt ds le input
+      let idChange = articleInput.closest(".cart__item").dataset.id;
+      //console.log(idChange);//retourne bien l'id de l'article sélectionné par le chgt ds le input
 
-    //console.log(cartLS);//retourne bien le LS
-    
-    const foundArticle = cartLS.filter(
-      (kanap) =>
-      kanap.idSelected === idChange &&
-      kanap.colorSelected === colorChange
-    );
+      let colorChange = articleInput.closest(".cart__item").dataset.color;
+      //console.log(colorChange);//retourne bien la couleur de l'article sélectionné par le chgt ds le input
 
-    console.log(foundArticle);//retourne bien le bon article au clic de l'input
-    console.log(cart.quantitySelected);//retourne bien la qté présente ds le ls
-//102
+      //console.log(cartLS);//retourne bien le LS
+
+      const foundArticle = cartLS.filter(
+        (kanap) =>
+          kanap.idSelected === idChange && kanap.colorSelected === colorChange
+      );
+
+      console.log(foundArticle); //retourne bien le bon article au clic de l'input
+      console.log(cart.quantitySelected); //retourne bien la qté présente ds le ls
+      //102
 
       //création d'une condition afin de maîtriser la qté utilisée par le client
       //si tu trouves l'article ET que sa qté est supérieure ou égale à 1 ET inférieure ou = à 100
-      if (foundArticle !== undefined && articleInput.value >= 1 && articleInput.value <= 100){
-
+      if (
+        foundArticle !== undefined &&
+        articleInput.value >= 1 &&
+        articleInput.value <= 100
+      ) {
         cart.quantitySelected = articleInput.value;
         localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //je mets à jour le localStorage
         alert("Vous venez de modifier la quantité de votre article!");
         {
-        sumQuantity(); 
-        sumPrice();
-        
-        } 
-
-      }
-      else {
+          sumPrice();
+          sumQuantity();
+        }
+      } else {
         alert("Vous devez sélectionner une quanté entre 1 et 100 unités!");
         {
-        sumQuantity(); 
-        sumPrice();
-        } 
+          sumPrice();
+          sumQuantity();
+        }
       }
-
-  })//fin de l'écoute
-
-
-
-
+    }); //fin de l'écoute
 
     //Création de la balise div encadrant la possibilité d'effacer l'article du panier
     const articleCartItemContentSettingsDelete = document.createElement("div");
@@ -166,11 +159,8 @@ else {
     articleDelete.textContent = "Supprimer";
     //console.log(articleDelete);
 
-
-
     //j'écoute le "btn" afin de prendre en compte les modifications du client (suppression de l'article)
-    articleDelete.addEventListener("click", (event) =>{
-
+    articleDelete.addEventListener("click", (event) => {
       event.preventDefault();
 
       //console.log(articleDelete);//retourne la balise deleteItem
@@ -180,38 +170,35 @@ else {
       let colorDelete = articleDelete.closest(".cart__item").dataset.color;
       //console.log(colorDelete);//retourne bien la bonne couleur lors du click sur "supprimer"
 
+      //création d'un constante qui va trouver l'article au click du "supprimer"
       const trashArticle = cartLS.find(
         (trash) =>
-        trash.idSelected === idDelete &&
-        trash.colorSelected === colorDelete
+          trash.idSelected === idDelete && trash.colorSelected === colorDelete
       );
-      console.log("article selectionné lors du delete=",trashArticle);//retourne bien un tableau du bon article au click sur "supprimer"
-      //console.log(cartLS);//retourne bien au click du "supprimer" le ls
-      //console.log("nb de ligne au array = ",cartLS.length);//retourne bien la longueur du tableau
-      cartLS = cartLS.filter((trash) => trash!= trashArticle);
+      console.log("article selectionné lors du delete=", trashArticle); //retourne bien un tableau du bon article au click sur "supprimer"
+      
+      //puis dans le ls je filtre 
+      cartLS = cartLS.filter((trash) => trash != trashArticle);
       console.log(cartLS);
-      
-  
-    localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //je mets à jour le localStorage
-    
-    const zoneDelete = document.querySelector("#cart__items");
-    zoneDelete.removeChild (articleDelete.closest("article"));
-    console.log(zoneDelete);
-    
-    alert("Vous venez de supprimer cet article!");
-    {
-      sumQuantity();
-      //sumPrice();
-    }
-    //faire en sorte de clear le ls une fois vidé si tous les articles sont otés
-    if( cartLS !== null && cartLS.length ===0){
-      localStorage.clear();
-      
-    }
 
-    
-    })//fin de l'écoute
-    
+      localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //je mets à jour le localStorage
+
+      //création d'un constante afin de supprimer du dom l'élément sélectionné
+      const zoneDelete = document.querySelector("#cart__items");
+      zoneDelete.removeChild(articleDelete.closest("article"));
+      console.log(zoneDelete);
+
+    alert("Vous venez de supprimer cet article!");
+      {
+        sumPrice();
+        sumQuantity();
+      }
+      //faire en sorte de clear le ls une fois vidé si tous les articles sont otés
+      if (cartLS !== null && cartLS.length === 0) {
+        localStorage.clear();
+      }
+    }); //fin de l'écoute
+
     /******************APPEL FETCH POUR RECUPERATION DES DONNEES MANQUANTES***********************************/
 
     let url = `http://localhost:3000/api/products/${id}`;
@@ -238,7 +225,6 @@ else {
         showCart.push(object);
         //console.log(showCart); //retourne bien les tableaux avec les objets du LS contenant ttes les données (api +ls)
 
-
         //Création de la balise img
         const articleImgSrc = document.createElement("img");
         articleImg.appendChild(articleImgSrc);
@@ -246,63 +232,59 @@ else {
         articleImgSrc.alt = articleCart.altText; //récupération du altText ds l'api
 
         //création de la fonction de calcul de somme totale
-    function sumPrice(){
-        //Création de la balise p contenant le prix unitaire des articles
-        const articlePrice = document.createElement("p");
-        articleH2.appendChild(articlePrice);
-        articlePrice.textContent =
-          "prix à l'unité =   " + articleCart.price + " € ";
-        articlePrice.style.fontSize = "15px";
-        //console.log(articlePrice);//retourne bien les phrases contenant les prix des articles sélectionnés
-        
-        //Création de la balise p contenant un sous total par article sélectionné
-        const sousTotal = document.createElement("p");
-        articleCartItemContentDescription.appendChild(sousTotal);
-        sousTotal.className = "sousTotal";
-        sousTotal.textContent =
-          " Sous Total =  " + articleCart.price * cart.quantitySelected + " €";
-        sousTotal.style.fontSize = "20px";
-        sousTotal.style.borderBottom = "solid 1px";
-        sousTotal.setAttribute(
-          "data-prix",
-          articleCart.price * cart.quantitySelected
-        );
-        
-      //console.log (totalSumArray);//retourne bien le array vide du début
-      //console.log(articleCart.price);//retourne bien les prix
+        function sumPrice() {
+          //Création de la balise p contenant le prix unitaire des articles
+          const articlePrice = document.createElement("p");
+          articleH2.appendChild(articlePrice);
+          articlePrice.textContent =
+            "prix à l'unité =   " + articleCart.price + " € ";
+          articlePrice.style.fontSize = "15px";
+          //console.log(articlePrice);//retourne bien les phrases contenant les prix des articles sélectionnés
 
-      let ssTotal = articleCart.price * cart.quantitySelected;
-      //console.log(ssTotal);//retourne bien les ss totaux
+          //Création de la balise p contenant un sous total par article sélectionné
+          const sousTotal = document.createElement("p");
+          articleCartItemContentDescription.appendChild(sousTotal);
+          sousTotal.className = "sousTotal";
+          sousTotal.textContent =
+            " Sous Total =  " +
+            articleCart.price * cart.quantitySelected +
+            " €";
+          sousTotal.style.fontSize = "20px";
+          sousTotal.style.borderBottom = "solid 1px";
+          sousTotal.setAttribute(
+            "data-prix",
+            articleCart.price * cart.quantitySelected
+          );
 
-      totalSumArray.push(ssTotal);
-      //console.log(totalSumArray);//retourne bien le tableau des ss Totaux
+          //console.log (totalSumArray);//retourne bien le array vide du début
+          //console.log(articleCart.price);//retourne bien les prix
 
-        //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
-        let sum = 0;
-        let sumTotal = totalSumArray.reduce(
-          (previousValue, currentValue) => previousValue + currentValue,
-          sum
-        );
-        // console.log(sumTotal);// retourne bien la somme totale calculée
-  
-        //affichage de la somme totale au bon endroit
-        let totalPrice = document.querySelector("#totalPrice");
-        totalPrice.textContent = sumTotal;
+          let ssTotal = articleCart.price * cart.quantitySelected;
+          //console.log(ssTotal);//retourne bien les ss totaux
 
+          totalSumArray.push(ssTotal);
+          //console.log(totalSumArray);//retourne bien le tableau des ss Totaux
 
-      }
+          //utilisation du reduce() afin de réduire la liste des valeurs accumulées ds le array
+          let sum = 0;
+          let sumTotal = totalSumArray.reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            sum
+          );
+          // console.log(sumTotal);// retourne bien la somme totale calculée
 
-        sumQuantity(); //appel d'une fonction afin de calculer de la qté totale
-        sumPrice();
-
+          //affichage de la somme totale au bon endroit
+          let totalPrice = document.querySelector("#totalPrice");
+          totalPrice.textContent = sumTotal;
+        }
+        sumPrice(); //appel de la fonction qui calcule la somme totale
+        sumQuantity(); //appel de la fonction qui calcule de la qté totale
       }) //fin du 2nd then
       .catch(function (error) {
         alert("Erreur! Avez-vous bien lancé le serveur local (port 3000)");
       }); //fin du catch
 
-
-
-      //création de la fonction de calcul de qté totale
+    //création de la fonction de calcul de qté totale
     function sumQuantity() {
       //console.log(cart.quantitySelected);//retourne bien la quanité par articles ds le panier
       //console.log(totalQuantityArray);//retourne bien le array vide du début
@@ -323,30 +305,12 @@ else {
       let itemTotalQuantity = document.querySelector("#totalQuantity");
       itemTotalQuantity.textContent = totalQty;
     } //fin fonction calcul qté
-
-    
-
-    
-  
-
-
-
-
-    
   }); //fin du foreach de fetch
 } //fin du else
 
-
 /*********************************Formulaire ******************************/
 
-
 //REVOIR LES ESPACES DANS LES REGEXXXXXX!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-
 
 //Expressions rationnelles ou Expressions régulières = Regex
 
@@ -567,4 +531,3 @@ order.addEventListener("click", (event) => {
       }); //fin du catch
   } //fin du else
 }); //fin de l'écoute
-
