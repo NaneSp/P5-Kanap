@@ -96,6 +96,7 @@ else {
     articleInput.setAttribute("min", "1");
     articleInput.setAttribute("max", "100");
 
+  
   //j'écoute le input afin de prendre en compte les modifications du client (ajout ou retrait de qté)
   articleInput.addEventListener("change", (event) =>{
     event.preventDefault();
@@ -130,18 +131,23 @@ else {
         localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //je mets à jour le localStorage
         alert("Vous venez de modifier la quantité de votre article!");
         {
-          window.location.href = "cart.html";
-        } //lien vers panier
+        sumQuantity(); 
+        sumPrice();
+        
+        } 
 
       }
       else {
         alert("Vous devez sélectionner une quanté entre 1 et 100 unités!");
         {
-          window.location.href = "cart.html";
-        } //lien retour panier
+        sumQuantity(); 
+        sumPrice();
+        } 
       }
 
   })//fin de l'écoute
+
+
 
 
 
@@ -160,35 +166,52 @@ else {
     articleDelete.textContent = "Supprimer";
     //console.log(articleDelete);
 
+
+
     //j'écoute le "btn" afin de prendre en compte les modifications du client (suppression de l'article)
     articleDelete.addEventListener("click", (event) =>{
 
       event.preventDefault();
 
-      console.log(articleDelete);
+      //console.log(articleDelete);//retourne la balise deleteItem
 
       let idDelete = articleDelete.closest(".cart__item").dataset.id;
-      console.log(idDelete);//retourne bien le bon id lors du click sur "supprimer"
+      //console.log(idDelete);//retourne bien le bon id lors du click sur "supprimer"
       let colorDelete = articleDelete.closest(".cart__item").dataset.color;
-      console.log(colorDelete);//retourne bien la bonne couleur lors du click sur "supprimer"
+      //console.log(colorDelete);//retourne bien la bonne couleur lors du click sur "supprimer"
 
-      const trashArticle = cartLS.filter(
+      const trashArticle = cartLS.find(
         (trash) =>
         trash.idSelected === idDelete &&
         trash.colorSelected === colorDelete
       );
-      console.log(trashArticle);//retourne bien le bon article au click sur "supprimer"
+      console.log("article selectionné lors du delete=",trashArticle);//retourne bien un tableau du bon article au click sur "supprimer"
+      //console.log(cartLS);//retourne bien au click du "supprimer" le ls
+      //console.log("nb de ligne au array = ",cartLS.length);//retourne bien la longueur du tableau
+      cartLS = cartLS.filter((trash) => trash!= trashArticle);
+      console.log(cartLS);
+      
+  
+    localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //je mets à jour le localStorage
+    
+    const zoneDelete = document.querySelector("#cart__items");
+    zoneDelete.removeChild (articleDelete.closest("article"));
+    console.log(zoneDelete);
+    
+    alert("Vous venez de supprimer cet article!");
+    {
+      sumQuantity();
+      //sumPrice();
+    }
+    //faire en sorte de clear le ls une fois vidé si tous les articles sont otés
+    if( cartLS !== null && cartLS.length ===0){
+      localStorage.clear();
+      
+    }
 
-      localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-      alert ("Cet article a bien été supprimé de votre panier!")
-
-
-
-
-
-
-    })
-
+    
+    })//fin de l'écoute
+    
     /******************APPEL FETCH POUR RECUPERATION DES DONNEES MANQUANTES***********************************/
 
     let url = `http://localhost:3000/api/products/${id}`;
