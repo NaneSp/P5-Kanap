@@ -100,12 +100,33 @@ addToCartBtn.addEventListener("click",  (event) => {
       cartLS = []; // cartLS = array vide
       cartLS.push(aSelected); //push ajout un élément
       localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
-      alert(
-        `Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier. 
-        
-        Pour consulter la page panier cliquer sur OK`
-      );{window.location.href = "cart.html";}//lien vers panier
     
+
+
+    /*function alertMessage (){
+        let msg = document.createElement("div");
+        document.querySelector(".item__img").style.position ="relative";
+        document.querySelector(".item__img").appendChild(msg);
+        msg.style.position ="absolute";
+        msg.style.top ="100px";
+        msg.style.backgroundColor ="#2C3E50";
+        msg.style.font ="arial";
+        msg.style.padding ="18px 28px";
+        msg.style.border ="solid";
+        msg.style.borderRadius ="15px;"
+        msg.style.boxShadow ="rgba(42, 18, 206, 0.9) 0 0 22px 6px";
+        msg.textContent = ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier`
+        
+
+      setTimeout(function (){
+          msg.style.display ="none";
+          window.location.href ="cart.html";
+        }, 2500)
+
+        
+      }*/
+
+      alertMessage();
       
     }
 
@@ -128,24 +149,68 @@ addToCartBtn.addEventListener("click",  (event) => {
           articleFound.quantitySelected + aSelected.quantitySelected;
         articleFound.quantitySelected = newQuantity;
         localStorage.setItem("LSArticle", JSON.stringify(cartLS)); //setItem=ajout/stockage + json.stringify convertit un objet JS en données json
-        alert(
-          ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} dans votre panier.
-          
-          Pour consulter la page panier cliquer sur OK`
-        );{window.location.href = "cart.html";}//lien vers page panier
+      
+
+
+        /*function alertMessage (){
+        let msg = document.createElement("div");
+        document.querySelector(".item__img").style.position ="relative";
+        document.querySelector(".item__img").appendChild(msg);
+        msg.style.position ="absolute";
+        msg.style.top ="100px";
+        msg.style.backgroundColor ="#2C3E50";
+        msg.style.font ="arial";
+        msg.style.padding ="18px 28px";
+        msg.style.border ="solid";
+        msg.style.borderRadius ="15px;"
+        msg.style.boxShadow ="rgba(42, 18, 206, 0.9) 0 0 22px 6px";
+        msg.textContent = ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier`
+        
+
+      setTimeout(function (){
+          msg.style.display ="none";
+          window.location.href ="cart.html";
+        }, 2500)
+
+        
+      }*/
+        alertMessage();
       }
       //sinon ajouter l'article simplement
       /*B*/
       else {
         cartLS.push(aSelected);
         localStorage.setItem("LSArticle", JSON.stringify(cartLS));
-        alert(
-          ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} dans votre panier.
-          
-          Pour consulter la page panier cliquer sur OK`
-        );{window.location.href = "cart.html";}//lien vers page panier
+
+
+
+      /* function alertMessage (){
+        let msg = document.createElement("div");
+        document.querySelector(".item__img").style.position ="relative";
+        document.querySelector(".item__img").appendChild(msg);
+        msg.style.position ="absolute";
+        msg.style.top ="100px";
+        msg.style.backgroundColor ="#2C3E50";
+        msg.style.font ="arial";
+        msg.style.padding ="18px 28px";
+        msg.style.border ="solid";
+        msg.style.borderRadius ="15px;"
+        msg.style.boxShadow ="rgba(42, 18, 206, 0.9) 0 0 22px 6px";
+        msg.textContent = ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier`
         
+
+      setTimeout(function (){
+          msg.style.display ="none";
+          window.location.href ="cart.html";
+        }, 2500)
+
+        
+      }*/
+      
+
       }
+      alertMessage();
     }
   }
 });
+
