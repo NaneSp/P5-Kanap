@@ -126,7 +126,7 @@ addToCartBtn.addEventListener("click",  (event) => {
         
       }*/
 
-      alertMessage();
+      return alertMessage();
       
     }
 
@@ -174,7 +174,7 @@ addToCartBtn.addEventListener("click",  (event) => {
 
         
       }*/
-        alertMessage();
+        return alertMessage();
       }
       //sinon ajouter l'article simplement
       /*B*/
@@ -184,33 +184,40 @@ addToCartBtn.addEventListener("click",  (event) => {
 
 
 
-      /* function alertMessage (){
-        let msg = document.createElement("div");
-        document.querySelector(".item__img").style.position ="relative";
-        document.querySelector(".item__img").appendChild(msg);
-        msg.style.position ="absolute";
-        msg.style.top ="100px";
-        msg.style.backgroundColor ="#2C3E50";
-        msg.style.font ="arial";
-        msg.style.padding ="18px 28px";
-        msg.style.border ="solid";
-        msg.style.borderRadius ="15px;"
-        msg.style.boxShadow ="rgba(42, 18, 206, 0.9) 0 0 22px 6px";
-        msg.textContent = ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier`
-        
-
-      setTimeout(function (){
-          msg.style.display ="none";
-          window.location.href ="cart.html";
-        }, 2500)
-
-        
-      }*/
       
+      return alertMessage();
 
       }
-      alertMessage();
+      
     }
   }
+
+  //création d'une fonction d'alert message lors du choix des produits
+  function alertMessage (){
+    let msg = document.createElement("div");
+    document.querySelector(".item__img").style.position ="relative";
+    document.querySelector(".item__img").appendChild(msg);
+    msg.style.position ="absolute";
+    msg.style.top ="100px";
+    msg.style.backgroundColor ="#2C3E50";
+    msg.style.font ="arial";
+    msg.style.padding ="18px 28px";
+    msg.style.border ="solid";
+    msg.style.borderRadius ="15px;"
+    msg.style.boxShadow ="rgba(42, 18, 206, 0.9) 0 0 22px 6px";
+    msg.textContent = ` Vous avez ajouté ${aSelected.quantitySelected} ${aSelected.nameSelected} de couleur ${aSelected.colorSelected} à votre panier`
+    
+  
+  setTimeout(function (){
+      msg.style.display ="none";
+      window.location.href ="cart.html";
+    }, 2500)
+  
+    
+  }
+
+
 });
+
+
 
