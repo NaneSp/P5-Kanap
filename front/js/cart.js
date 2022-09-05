@@ -111,14 +111,14 @@ async function insertDom() {
       articlePrice.style.fontSize = "15px";
       //console.log(articlePrice);//retourne bien les phrases contenant les prix des articles sélectionnés
 
-      //Création de la balise p contenant un sous total par article sélectionné
+     /* //Création de la balise p contenant un sous total par article sélectionné
       const sousTotal = document.createElement("p");
       articleCartItemContentDescription.appendChild(sousTotal);
       sousTotal.className = "sousTotal";
       sousTotal.textContent = " Sous Total =  " + carts.price * carts.quantity + " €";
       sousTotal.style.fontSize = "20px";
       sousTotal.style.borderBottom = "solid 1px";
-      sousTotal.setAttribute("data-prix", carts.price * carts.quantity);
+      sousTotal.setAttribute("data-prix", carts.price * carts.quantity);*/
 
       //Création de la balise div
       const articleCartItemContentSettings = document.createElement("div");
@@ -371,11 +371,12 @@ function emptyCart(){
   const buttonAccueil = document.createElement("button");
   cartTitle.appendChild(buttonAccueil);
   buttonAccueil.className ="btn";
-  buttonAccueil.textContent ="Accueil";
+  buttonAccueil.textContent ="Retour vers l'accueil";
   buttonAccueil.style.fontSize =" 22px";
   buttonAccueil.style.color ="#FFFFFF";
   buttonAccueil.style.background ="#2C3E50";
   buttonAccueil.style.padding ="18px 28px";
+  buttonAccueil.style.marginTop = "20px";
   buttonAccueil.style.border ="none";
   buttonAccueil.style.borderRadius ="40px";
   buttonAccueil.style.cursor =" pointer";
@@ -403,156 +404,40 @@ function emptyCart(){
 }
 
 
+//push dans le ls
+localStorage.setItem("LSArticle", JSON.stringify(cartLS));
 
-/*********************************Formulaire ******************************/
+/*********************************Formulaire et commande ******************************/
+/*But : une fois le formulaire rempli et sans erreur, on envoie (via le bouton "commander") au serveur les données de celui ainsi que le contenu du panier, le client, liu, sera renvoyé vers la page de confirmation et le serveur lui renverra son numéro de commande... si tout ce passe bien*/
 
 
 //Expressions rationnelles ou Expressions régulières = Regex
 
-//création d'une variable récupérant la place du formulaire
-let form = document.querySelector(".cart__order__form");
-//console.log(form.firstName);// retourne l'input firstName du formulaire
-
-// 1 Ecouter la modification de l'email
-
-//j'écoute la case email du formulaire à chaque changement fait par le client je fais un callback pour lui dire ce qu'on doit faire et j'appelle la fonction validEmail avec, en paramètre, ce que le client saisit donc le form.email (this)
-form.email.addEventListener("change", function () {
-  validEmail(this);
-});
-
-//validation email
-const validEmail = function (inputEmail) {
-  //Création de la reg Exp pour la validation email
-  let emailRegExp = new RegExp( //variable en format objet
-    "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$",
-    "g"
-  );
+let firstNameRegExp = /^[a-zA-ZÀ-ÖØ-öø-ÿ-'\s-]+$/;
+let lastNameRegExp = firstNameRegExp;
+let addressRegExp = /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'°\s]+$/;
+let cityRegExp = /^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,' ]+$/;
+let emailRegExp = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
   //^ = début donc au début on a le droit d'écrire ds l'email le a-z ou le A-Z ou 0-9 mais aussi des  .  des tirets des underscrore et on peut les écrire +sieurs fois (d'ou le +)
   //PUIS j'aurai le @ (une seule fois)et de la même manière qu'au début
   //ensuite le caractère du . (une seule fois) (pour faire le .com .fr...)
   //qui sera finalisé par . des lettres minuscules et entre 2lettres mini et 10 maxi
   //$ indique la fin de la phrase
 
-  //paramètre de marqueur(flag)comment je dois lire la regex = g lira de manière globale
 
-  //console.log(testEmail); // renvoi bien vrai si email ok = toto@gmail.com
-
-  //Récupération de la balise où se situera le message d'erreur si false
-  let emailErrorMsg = document.querySelector("#emailErrorMsg");
-
-  if (emailRegExp.test(inputEmail.value) == false) {
-    emailErrorMsg.textContent = "Attention ! Email invalide";
-    document.querySelector("#email").style.background = "#fbbcbc";
-  } else {
-    //sinon c'est ok laisse le client taper
-  }
-};
-
-// 2 Ecouter la modification du prénom
-form.firstName.addEventListener("change", function () {
-  validFirstName(this);
-});
-
-//validation prénom
-const validFirstName = function (inputFirstName) {
-  //Création de la reg Exp pour la validation email
-  let firstNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ-- ]+$", "g");
-
-  //Récupération de la balise où se situera le message d'erreur si false
-  let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
-
-  if (firstNameRegExp.test(inputFirstName.value) == false) {
-    firstNameErrorMsg.textContent = "Attention ! Prénom Invalide";
-    document.querySelector("#firstName").style.background = "#fbbcbc";
-  } else {
-    //sinon c'est ok laisse le client taper
-  }
-};
-
-// 3 Ecouter la modification du nom
-form.lastName.addEventListener("change", function () {
-  validLastName(this);
-});
-
-//validation du nom
-const validLastName = function (inputLastName) {
-  //Création de la reg Exp pour la validation email
-  let lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÖØ-öø-ÿ-- ]+$", "g");
-
-  //Récupération de la balise où se situera le message d'erreur si false
-  let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
-
-  if (lastNameRegExp.test(inputLastName.value) == false) {
-    lastNameErrorMsg.textContent = "Attention ! Nom Invalide";
-    document.querySelector("#lastName").style.background = "#fbbcbc";
-  } else {
-    //sinon c'est ok laisse le client taper
-  }
-};
-
-// 4 Ecouter la modification de l'adresse
-form.address.addEventListener("change", function () {
-  validAddress(this);
-});
-
-//validation du nom
-const validAddress = function (inputAddress) {
-  //Création de la reg Exp pour la validation de l'adressse
-  let addressRegExp = new RegExp(
-    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,'° ]+$",
-    "g" 
-  );
-
-  //Récupération de la balise où se situera le message d'erreur si false
-  let addressErrorMsg = document.querySelector("#addressErrorMsg");
-
-  if (addressRegExp.test(inputAddress.value) == false) {
-    addressErrorMsg.textContent = "Attention ! Adresse Invalide";
-    document.querySelector("#address").style.background = "#fbbcbc";
-  } else {
-    //sinon c'est ok laisse le client taper
-  }
-};
-
-// 5 Ecouter la modification de la ville
-form.city.addEventListener("change", function () {
-  validCity(this);
-});
-
-//validation de la ville
-const validCity = function (inputCity) {
-  //Création de la reg Exp pour la validation de la ville
-  let cityRegExp = new RegExp(
-    "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9-,' ]+$",
-    "g" 
-  );
-
-  //Récupération de la balise où se situera le message d'erreur si false
-  let cityErrorMsg = document.querySelector("#cityErrorMsg");
-
-  if (cityRegExp.test(inputCity.value) == false) {
-    cityErrorMsg.textContent = "Attention ! Ville Invalide";
-    document.querySelector("#city").style.background = "#fbbcbc";
-  } else {
-    //sinon c'est ok laisse le client taper
-  }
-};
-
-/**************************FIN Formualire*******************************/
-
-/********************Validation de la commande**************************/
-
-/*But : une fois le formulaire rempli, on envoie (via le bouton "commander") au serveur les données de celui ainsi que le contenu du panier, le client, liu, sera renvoyé vers la page de confirmation et le serveur lui renverra son numéro de commande... si tout ce passe bien*/
-
-
-
-
+//récupération des emplacements des messages d'erreur
+let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
+let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
+let addressErrorMsg = document.querySelector("#addressErrorMsg");
+let cityErrorMsg = document.querySelector("#cityErrorMsg");
+let emailErrorMsg = document.querySelector("#emailErrorMsg");
 
 //création de la variable récupérant le input "commander"
 let order = document.querySelector("#order");
 
 //j'écoute le bouton "commander" afin de pouvoir envoyer ma commande au serveur
 order.addEventListener("click", (event) => {
+  event.preventDefault(); 
   //récupération des infos du client
   let inputFirstName = document.querySelector("#firstName");
 
@@ -588,17 +473,36 @@ order.addEventListener("click", (event) => {
     products: products,
   }; //fin du contactOrder
 
-  //ajout d'une condition si champs de formulaire vide
-  //si la valeur de cet input est strictement égal à vide OU....
-  if (
-    inputFirstName.value === "" ||
-    inputLastName.value === "" ||
-    inputAddress.value === "" ||
-    inputCity.value === "" ||
-    inputMail.value === ""
-  ) {
-    alert("Attention champs du formulaire manquant!");
+  //ajout d'une condition si champs de formulaire vide ou faux
+  //si la valeur de cet input est égale à faux OU si elle est strictement égale à vide 
+  if (firstNameRegExp.test(inputFirstName.value) == false || inputFirstName.value === null ){
+  firstNameErrorMsg.textContent = "Merci de renseigner un prénom valide";
+  document.querySelector("#firstName").style.background = "#fbbcbc";
+  return false;
+  
   }
+  
+  else if(lastNameRegExp.test(inputLastName.value) == false || inputLastName.value === null){
+  lastNameErrorMsg.textContent = "Merci de renseigner un nom valide";
+  document.querySelector("#lastName").style.background = "#fbbcbc";
+  return false;
+
+  }else if(addressRegExp.test(inputAddress.value) == false || inputAddress.value === null){
+  addressErrorMsg.textContent = "Merci de renseigner une adresse valide";
+  document.querySelector("#address").style.background = "#fbbcbc";
+  return false;
+
+  }else if(cityRegExp.test(inputCity.value) == false || inputCity.value === null){
+  cityErrorMsg.textContent = "Merci de renseigner une ville valide";
+  document.querySelector("#city").style.background = "#fbbcbc";
+  return false;
+  }
+  else if (emailRegExp.test(inputMail.value) == false || inputMail.value === null) {
+  emailErrorMsg.textContent = "Merci de renseigner un email valide";
+  document.querySelector("#email").style.background = "#fbbcbc";
+  return false;
+  
+    }
   //sinon
   else {
     //envoi des données (récupérées ci dessus )de la commande (panier + formulaire contact) au serveur
