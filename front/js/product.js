@@ -211,7 +211,7 @@ addToCartBtn.addEventListener("click",  (event) => {
   setTimeout(function (){
       msg.style.display ="none";
       window.location.href ="cart.html";
-    }, 2500)
+    }, 2000)
   
     
   }

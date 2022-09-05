@@ -266,7 +266,7 @@ async function modifyQuantity() {
         inputs.value <= 100
       ) {
         foundColor.quantitySelected = inputs.value;
-
+        console.log(inputs.value);
         //mise à jour le localStorage
         localStorage.setItem("LSArticle", JSON.stringify(valueLS)); 
         alert("Vous venez de modifier la quantité de votre article!");
